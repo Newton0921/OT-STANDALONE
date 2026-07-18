@@ -33,7 +33,7 @@ bash
 
 nmap -p 5020 127.0.0.1
 
-Expected Result: Port 5020 should show as open.
+Expected Result: Port 5020 should show as open<img width="786" height="553" alt="image" src="https://github.com/user-attachments/assets/c20a784e-c915-490d-897e-03440fea5cd6" />
 
 
 
