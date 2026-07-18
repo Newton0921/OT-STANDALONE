@@ -6,6 +6,8 @@ Forensic Command:
 Bash
 grep -i "New client connected" /tmp/mqtt_lab/log/mosquitto.log
 Simulated Log Evidence:
+<img width="916" height="150" alt="image" src="https://github.com/user-attachments/assets/e099adc7-f9f9-4617-a2d5-24b9ccb39997" />
+
 
 Plaintext
 1784509812: New client connected from 10.0.5.112 as rogue_solar_client (c1, k60).
@@ -25,9 +27,8 @@ grep -A 1 -i "rogue_solar_client PUBLISH" /tmp/mqtt_lab/log/mosquitto.log
 Simulated Log Evidence:
 
 Plaintext
-1784509815: Received PUBLISH from rogue_solar_client (d0, q0, r0, m0, 'grid/solar/site7/kw', ... (6 bytes))
-1784509815: Sending PUBLISH to dashboard_monitor (d0, q0, r0, m0, 'grid/solar/site7/kw', ... (150.00))
-Target Topic: grid/solar/site7/kw
+<img width="922" height="105" alt="image" src="https://github.com/user-attachments/assets/92ae2729-5421-493e-b274-b5bf5ef71914" />
+
 
 First Forged Payload: 150.00
 
