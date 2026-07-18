@@ -1,0 +1,15 @@
+id: OT-RogueSolar-Attack
+name: OT-RogueSolar-Attack
+description: >
+  Executes the Rogue Solar Telemetry Publisher attack vector by connecting as an unauthorized client and publishing a retained forged solar generation value to the telemetry topic grid/solar/site7/kw.
+tactic: impair-process-control
+technique_id: T1692.002
+technique_name: "Unauthorized Message: Reporting Message"
+sub_technique: None
+tag: blue
+executors:
+  - name: sh
+    platform: linux
+    command: python3 /home/newton/Hacktify/5_Rogue_Solar/Module_2_Blue/red_attack.py
+    payloads: []
+    parsers: []

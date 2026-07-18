@@ -1,0 +1,18 @@
+id: OT-Contractor-Account-Reuse-Attack
+name: OT-Contractor-Account-Reuse-Attack
+description: >
+  Simulates a Red Team attack by executing the red_attack.sh script,
+  which logs in using compromised contractor credentials and retrieves
+  the restricted high-voltage feeder view. This generates HMI logs for
+  the Blue Team to investigate.
+tactic: lateral-movement
+technique_id: T0859
+technique_name: Valid Accounts
+sub_technique: None
+tag: attack
+executors:
+  - name: sh
+    platform: linux
+    command: ./red_attack.sh
+    payloads: []
+    parsers: []

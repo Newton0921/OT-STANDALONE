@@ -1,0 +1,6 @@
+Q#,Type,Question,Option A,Option B,Option C,Option D,Answer,Explanation
+Q1,MCQ,What is the default TCP port utilized for the OPC UA service discovery during reconnaissance?,502,4840,102,44818,B,OPC UA binary protocol defaults to port 4840.
+Q2,MCQ,How is the writable setpoint distinguished from decoy nodes in this lab scenario?,By checking the Node Class,By checking the UserAccessLevel attribute,By triggering an alarm,By exploiting a buffer overflow,B,The UserAccessLevel dictates if an anonymous session has write permissions.
+Q3,MCQ,What token type was leveraged to perform the setpoint write without credentials?,Certificate,Username,Anonymous,Kerberos,C,The vulnerability stems from anonymous writes being improperly enabled on the setpoint node.
+Q4,Fill in the Blank,Enter the exact Node ID of the ReactivePowerSetpoint node modified during the exercise.,,,,,ns=2;i=5,The node resides in namespace index 2 with an identifier of 5.
+Q5,Fill in the Blank,FLAG: Enter the exact float value written to the setpoint node by the execution script that triggered the DeviationAlarm.,,,,,75.0,"Sourced from executing the lab python script, pushing 75.0 Mvar to force the alarm condition."

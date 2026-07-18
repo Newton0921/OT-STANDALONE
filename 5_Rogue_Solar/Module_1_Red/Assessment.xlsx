@@ -1,0 +1,6 @@
+Q#,Type,Question,Option A,Option B,Option C,Option D,Answer,Explanation
+1,MCQ,Which nmap flag is used to scan specifically for the default MQTT port?,-p 8080,-p 1883,-p 443,-p 21,Option B,MQTT natively operates on TCP port 1883.
+2,MCQ,How can an attacker discover hidden topics on a misconfigured MQTT broker?,SQL Injection,Subscribing to #,Path Traversal,ARP Spoofing,Option B,The # wildcard allows a subscriber to see all messages published to all topics if ACLs permit it.
+3,MCQ,What vulnerability allowed the rogue payload injection?,Buffer Overflow,XSS,Misconfigured ACLs,Weak Passwords,Option C,Access Control Lists (ACLs) restrict who can publish/subscribe. Weak ACLs allow unauthorized data injection.
+4,Fill in the Blank,Enter the exact MQTT topic targeted by the rogue client:,,,,,grid/solar/site7/kw,This is the specific hierarchy where telemetry data was pushed.
+5,Fill in the Blank,FLAG: Enter the exact forged payload value (in kW) published by the rogue client to trigger the threshold:,,,,,150.00,This specific artifact proves successful execution of the required threshold payload.

@@ -1,0 +1,20 @@
+id: 110e53a7-e85d-4f76-90dc-329b15ab6711
+name: OpenPLC Availability Check
+description: >
+  Verifies OpenPLC is fully operational via three checks:
+  (1) TCP port 8080 is bound, (2) openplc_shadow container is Active/running,
+  (3) HTTP probe to http://localhost:8080/ returns a valid code.
+  Additionally confirms that Modbus TCP (port 502) is bound and responsive.
+  All checks must pass for SERVICE_STATUS:UP; any failure exits 1.
+tactic: execution
+technique_id: T1059
+technique_name: Command and Scripting Interpreter
+sub_technique: T1059.004
+tag: service-availability
+executors:
+  - name: sh
+    platform: linux
+    command: |
+      PORT_UP=$(ss -tlnp 2>/dev/null | grep -q ':8080 ' && echo 1 || echo 0); MODBUS_UP=$(ss -tlnp 2>/dev/null | grep -q ':502 ' && echo 1 || echo 0); SVC_STATE=$((podman ps --format '{{.Names}}' || docker ps --format '{{.Names}}') 2>/dev/null | grep -q 'openplc_shadow' && echo "active" || echo "inactive"); HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 --max-time 5 http://localhost:8080/ 2>/dev/null || echo "000"); if [ "$PORT_UP" -ge 1 ] && [ "$SVC_STATE" = "active" ] && { [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ] || [ "$HTTP_CODE" = "403" ]; } && [ "$MODBUS_UP" -ge 1 ]; then echo "SERVICE_STATUS:UP | MODBUS:OPEN"; else echo "SERVICE_STATUS:DOWN | HMI_PORT:$([ "$PORT_UP" -ge 1 ] && echo UP || echo DOWN) | HMI_SVC:${SVC_STATE} | HMI_HTTP:${HTTP_CODE} | MODBUS_PORT:$([ "$MODBUS_UP" -ge 1 ] && echo UP || echo DOWN)"; exit 1; fi
+    payloads: []
+    parsers: []

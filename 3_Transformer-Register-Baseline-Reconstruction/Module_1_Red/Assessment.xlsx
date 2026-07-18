@@ -1,0 +1,6 @@
+Q#,Type,Question,Option A,Option B,Option C,Option D,Answer,Explanation
+Q1,MCQ,Which Modbus function code is standard for reading analog values that can be changed by the master (Holding Registers)?,FC01,FC02,FC03,FC04,Option C,FC03 reads Holding Registers which represent analog output/state variables.
+Q2,MCQ,How can a red team accurately distinguish a true process register from a static decoy in this scenario?,By guessing,By observing value fluctuations over time,By checking the whitelist,By the register value being zero,Option B,Real process data varies dynamically over time based on physics/simulation; decoys often remain static.
+Q3,MCQ,Based on your enumeration, which register type handles the Oil Temperature variable?,Coil,Discrete Input,Holding Register,Input Register,Option D,Oil Temp changes realistically and was found mapped to an Input Register (FC04).
+Q4,Fill in the Blank,What is the exact Modbus integer address of the Transformer Load register?,,,,68,Address 68 holds the fluctuating value between 50-150 MW.
+Q5,Fill in the Blank,FLAG: Submit the mapping of the four correct addresses formatted exactly as: [LoadAddr]-[TempAddr]-[FanAddr]-[BreakerAddr],,,,68-86-90-59,This sequence proves the user discovered all four variables correctly.

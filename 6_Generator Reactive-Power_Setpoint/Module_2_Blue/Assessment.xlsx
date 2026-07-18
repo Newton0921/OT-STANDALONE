@@ -1,0 +1,6 @@
+Q#,Type,Question,Option A,Option B,Option C,Option D,Answer,Explanation
+Q1,MCQ,How was the anomalous session distinguished from approved baseline sessions?,It used a different NodeID,It used an Anonymous user token from an unknown IP,It triggered a buffer overflow,It was missing a timestamp,B,Baseline connections used a Username token from IP 192.168.10.50.
+Q2,MCQ,"Which log provided the specific ""old value"" and ""new value"" data linked directly to the session ID?",Process Alarm Log,Value-Change Log,Write Event Log,Session Log,C,The Write Event Log explicitly maps Session IDs to their respective payload modifications.
+Q3,MCQ,What did the process alarm log confirm regarding the write operation?,The session ID was blocked,An OUT OF BAND deviation threshold was breached,The value was rolled back to 10.0,The server crashed,B,The alarm log indicates the 75.0 value breached the approved band threshold.
+Q4,Fill in the Blank,Enter the exact source IP address of the anomalous Anonymous OPC UA session.,,,,,10.10.10.100,Identified in session_log.txt alongside the Anonymous token.
+Q5,Fill in the Blank,Enter the exact alarm timestamp from the process alarm log corresponding to the setpoint write.,,,,,2026-06-18T10:22:45.123456,The timestamp matches the write event that triggered the condition.

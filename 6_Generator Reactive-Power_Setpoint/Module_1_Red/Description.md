@@ -1,0 +1,9 @@
+Your team has gained logical access to a segmented Operational Technology (OT) network supporting a simulated power generation facility. Intelligence gathered during the engagement suggests that the environment uses an OPC UA server to exchange operational telemetry and process control information between engineering workstations and the generation control system.
+
+Although the network is segmented, an OPC UA service has been identified as accessible from your current position. The engineering team believes the server is securely configured; however, recent maintenance activities may have introduced insecure access permissions on one or more process variables.
+
+Your mission is to investigate the exposed OPC UA service and determine whether it can be abused to influence the generator's operation. Begin by identifying the service, enumerating its namespace, and analyzing the available objects to distinguish operational telemetry from process control parameters. Assess the access permissions of the exposed variables and determine whether any critical control parameter permits unauthorized modification.
+
+If a vulnerable control parameter is discovered, exploit the misconfiguration by modifying its value beyond the approved operating range. Confirm that the change has been successfully applied and observe its impact on the simulated process. Successful completion of the objective is achieved when the unauthorized parameter modification causes the backend control system to detect a process deviation and generate an alarm.
+
+Context: This exercise demonstrates MITRE ATT&CK for ICS – T0836 (Modify Parameter) under the TA0106 – Impair Process Control tactic, highlighting the risks associated with improperly secured OPC UA deployments in industrial environments.

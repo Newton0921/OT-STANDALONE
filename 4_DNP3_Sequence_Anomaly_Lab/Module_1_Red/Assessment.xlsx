@@ -1,0 +1,6 @@
+Q#,Type,Question,Option A,Option B,Option C,Option D,Answer,Explanation
+1,MCQ,Which default TCP port is typically used to discover DNP3 services?,502,20000,44818,102,20000,TCP 20000 is the assigned port for DNP3.
+2,MCQ,What is the primary difference between Direct Operate and Select-Before-Operate?,DO requires TLS; SBO does not.,SBO is a two-step arm/fire sequence; DO is a single execution step.,DO is only for reading data; SBO writes data.,There is no difference.,SBO is a two-step arm/fire sequence; DO is a single execution step.,"SBO prevents accidental operation by requiring the point to be ""selected"" before it is ""operated""."
+3,MCQ,Which DNP3 Function Code represents Direct Operate?,1,2,3,4,3,Function Code 3 is Direct Operate. FC 1 is Select.
+4,Fill in the Blank,Enter the exact binary output point index operated to change the breaker state:,,,,,7,The python execution script targets index 7.
+5,Fill in the Blank,FLAG: Enter the DNP3 Application Control source master address used by the script to bypass the whitelist:,,,,,66,The execution script explicitly defines the unlisted source address as 66.

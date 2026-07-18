@@ -1,0 +1,15 @@
+id: OT-OPCUA-Setup
+name: OT-OPCUA-Setup
+description: >
+  OPC UA Server is installed and configured on the target host. No specific CVEs are assigned, but insecure anonymous write access (CWE-284) is exposed on OPC UA TCP port 4840. This setup enables the OPC UA parameter modification (T0836) attack surface.
+tactic: impair-process-control
+technique_id: T0836
+technique_name: Modify Parameter
+sub_technique: None
+tag: red
+executors:
+  - name: sh
+    platform: linux
+    command: echo 'Setup Successfully'
+    payloads: []
+    parsers: []

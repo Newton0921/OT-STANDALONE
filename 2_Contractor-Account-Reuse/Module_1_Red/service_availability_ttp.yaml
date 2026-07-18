@@ -1,0 +1,21 @@
+id: b78e1d2c-c5a4-4a25-9d3c-623b05a7f921
+name: Rapid SCADA Webstation Availability Check
+description: >
+  Verifies Rapid SCADA Webstation is fully operational via three checks:
+  (1) TCP port 10008 is bound, (2) scada-web systemd unit is Active,
+  (3) HTTP probe to http://localhost:10008/ returns a valid code.
+  Additionally confirms that the Modbus simulator (port 5020, modbus-sim service)
+  and the credential leak server (port 8081) are fully up and active.
+  All checks must pass for SERVICE_STATUS:UP; any failure exits 1.
+tactic: execution
+technique_id: T1059
+technique_name: Command and Scripting Interpreter
+sub_technique: T1059.004
+tag: service-availability
+executors:
+  - name: sh
+    platform: linux
+    command: |
+      PORT_UP=$(ss -tlnp 2>/dev/null | grep -q ':10008 ' && echo 1 || echo 0); MODBUS_UP=$(ss -tlnp 2>/dev/null | grep -q ':5020 ' && echo 1 || echo 0); LEAK_UP=$(ss -tlnp 2>/dev/null | grep -q ':8081 ' && echo 1 || echo 0); MODBUS_SVC=$(systemctl is-active modbus-sim 2>/dev/null || echo "inactive"); SVC_STATE=$(systemctl is-active scada-web 2>/dev/null || echo "inactive"); HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 --max-time 5 http://localhost:10008/ 2>/dev/null || echo "000"); if [ "$PORT_UP" -ge 1 ] && [ "$SVC_STATE" = "active" ] && { [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ] || [ "$HTTP_CODE" = "403" ]; } && [ "$MODBUS_UP" -ge 1 ] && [ "$MODBUS_SVC" = "active" ] && [ "$LEAK_UP" -ge 1 ]; then echo "SERVICE_STATUS:UP | MODBUS:OPEN | LEAK_PORT:OPEN"; else echo "SERVICE_STATUS:DOWN | HMI_PORT:$([ "$PORT_UP" -ge 1 ] && echo UP || echo DOWN) | HMI_SVC:${SVC_STATE} | HMI_HTTP:${HTTP_CODE} | MODBUS_PORT:$([ "$MODBUS_UP" -ge 1 ] && echo UP || echo DOWN) | MODBUS_SVC:${MODBUS_SVC} | LEAK_PORT:$([ "$LEAK_UP" -ge 1 ] && echo UP || echo DOWN)"; exit 1; fi
+    payloads: []
+    parsers: []

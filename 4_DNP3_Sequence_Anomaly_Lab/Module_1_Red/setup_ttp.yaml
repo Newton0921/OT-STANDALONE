@@ -1,0 +1,15 @@
+id: OT-DNP3-Sequence-Anomaly-Red-Setup
+name: OT-DNP3-Sequence-Anomaly-Red-Setup
+description: >
+  Initializes the DNP3 Protocol Sequence Anomaly Red environment.
+tactic: execution
+technique_id: T1692
+technique_name: Unauthorized Message
+sub_technique: T1692.001
+tag: red
+executors:
+  - name: sh
+    platform: linux
+    command: echo 'Setup Successfully'
+    payloads: []
+    parsers: []

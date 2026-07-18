@@ -1,0 +1,6 @@
+[Q#],[Type],[Question],[Option A],[Option B],[Option C],[Option D],[Answer],[Explanation]
+Q1,MCQ,What default port does the OpenPLC web interface operate on?,80,443,502,8080,8080,OpenPLC uses 8080 for HTTP and 502 for Modbus TCP.
+Q2,MCQ,What technique is used to upload the tampered logic file?,Exploiting a buffer overflow,Using the standard Web UI/API Upload,SQL Injection,Physical USB plug-in,Using the standard Web UI/API Upload,T0889 usually abuses legitimate engineering features.
+Q3,MCQ,Which IEC 61131-3 element was used to create the hidden delay?,PID Controller,TON (Timer On Delay),CTU (Counter Up),R_TRIG (Rising Edge),TON (Timer On Delay),A TON block delays an output until a specific time has passed.
+Q4,Fill in the Blank,What is the Modbus/OpenPLC memory address for FEEDER_3_CMD?,%QX0.0,%QX0.1,%QX0.2,%QX0.3,%QX0.2,Observed in the variable definitions of the ST program.
+Q5,Fill in the Blank,FLAG: Provide the SHA-256 hash of the malicious.st file deployed.,[Blank],[Blank],[Blank],[Blank],f44e836e588b38be56f3c637cf588f72510f9693cff0ac57307c897a46932279,Derived by running `sha256sum ./engineering_path/malicious/malicious.st`.

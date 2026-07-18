@@ -1,0 +1,6 @@
+Q#,Type,Question,Option A,Option B,Option C,Option D,Answer,Explanation
+1,MCQ,Which method is used to identify the unlisted master address in this scenario?,Memory dumping the PLC,Cross-referencing protocol logs with the master whitelist,Checking firewall drop logs,Running an active network scan,Cross-referencing protocol logs with the master whitelist,"The protocol logs record the source address of every frame, which can be checked against the approved whitelist."
+2,MCQ,How is the sequence anomaly classified in this lab?,FC4 without FC3,FC1 without FC2,FC3 without preceding FC1,FC4 followed by FC1,FC3 without preceding FC1,Direct Operate (FC3) bypasses the intended Select (FC1) step.
+3,MCQ,What did the process state change entry confirm?,The outstation crashed,The master disconnected,The breaker transitioned to the OPEN state,The DNP3 session timed out,The breaker transitioned to the OPEN state,The logs explicitly state the physical consequence of the protocol anomaly.
+4,Fill in the Blank,Enter the exact unlisted master address from the protocol log:,,,,,66,Address 66 was used to issue the anomalous command.
+5,Fill in the Blank,Enter the exact timestamp (HH:MM:SS) of the anomalous Direct Operate frame from the protocol log:,,,,,09:22:14,Found directly in the protocol log entry for the anomaly.

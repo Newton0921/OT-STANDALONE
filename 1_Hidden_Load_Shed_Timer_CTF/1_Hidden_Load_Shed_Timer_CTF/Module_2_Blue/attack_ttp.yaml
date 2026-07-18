@@ -1,0 +1,18 @@
+id: OT-Hidden-Load-Shed-Timer-Attack
+name: OT-Hidden-Load-Shed-Timer-Attack
+description: >
+  Simulates a Red Team attack by replacing the baseline PLC logic
+  with a tampered program (active_malicious.st) in the openplc_blue container
+  and restarting the runtime. This triggers the degradation behavior (periodic trips
+  on Feeder 3) and generates audit logs for the Blue Team to investigate.
+tactic: lateral-movement
+technique_id: T0889
+technique_name: Modify Program
+sub_technique: None
+tag: attack
+executors:
+  - name: sh
+    platform: linux
+    command: podman cp ./investigation/active_malicious.st openplc_blue:/docker_persistent/st_files/active_malicious.st && podman exec openplc_blue bash -c "cd /workdir/webserver && ./scripts/compile_program.sh active_malicious.st" && podman stop openplc_blue && sleep 2 && podman start openplc_blue
+    payloads: []
+    parsers: []

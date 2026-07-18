@@ -1,0 +1,19 @@
+id: 9d8b375b-5136-4c74-988b-8fa492f25458
+name: Mosquitto MQTT Broker Availability Check
+description: >
+  Verifies Mosquitto MQTT Broker is fully operational via three checks:
+  (1) Mosquitto systemd unit or Docker container is active, (2) TCP port 1883 is bound,
+  (3) Custom MQTT probe using paho-mqtt subscribes and successfully receives a telemetry payload.
+  All checks must pass for SERVICE_STATUS:UP; any failure exits 1.
+tactic: execution
+technique_id: T1059
+technique_name: Command and Scripting Interpreter
+sub_technique: T1059.004
+tag: service-availability
+executors:
+  - name: sh
+    platform: linux
+    command: |
+      SVC_STATE=$(systemctl is-active mosquitto >/dev/null 2>&1 && echo "active" || ( (docker ps 2>/dev/null | grep -q mqtt_broker || pgrep -x mosquitto >/dev/null) && echo "active" || echo "inactive" )); PORT_UP=$(nc -z 127.0.0.1 1883 >/dev/null 2>&1 && echo 1 || echo 0); CUSTOM_PROBE=$(python3 -c "import paho.mqtt.client as mqtt, time, sys; rec = []; cl = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1) if hasattr(mqtt, 'CallbackAPIVersion') else mqtt.Client(); cl.on_message = lambda c, u, m: rec.append(m.payload); cl.connect('127.0.0.1', 1883); cl.subscribe('grid/solar/site7/kw'); cl.loop_start(); start = time.time(); [time.sleep(0.1) for _ in range(50) if not rec and time.time() - start < 5]; cl.loop_stop(); sys.exit(0 if rec else 1)" 2>/dev/null && echo 1 || echo 0); if [ "$SVC_STATE" = "active" ] && [ "$PORT_UP" -eq 1 ] && [ "$CUSTOM_PROBE" -eq 1 ]; then echo "SERVICE_STATUS:UP"; else echo "SERVICE_STATUS:DOWN"; exit 1; fi
+    payloads: []
+    parsers: []

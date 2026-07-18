@@ -1,0 +1,15 @@
+id: OT-OPCUA-Attack
+name: OT-OPCUA-Attack
+description: >
+  Executes the OPC UA parameter modification attack to alter the generator's reactive-power setpoint to an out-of-band value.
+tactic: impair-process-control
+technique_id: T0836
+technique_name: Modify Parameter
+sub_technique: None
+tag: blue
+executors:
+  - name: sh
+    platform: linux
+    command: bash "/home/newton/Hacktify/6_Generator Reactive-Power_Setpoint/Module_2_Blue/red_attack.sh"
+    payloads: []
+    parsers: []

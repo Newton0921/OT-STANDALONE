@@ -1,0 +1,2 @@
+APPROVED_MASTERS:
+10.0.0.50 - DNP3_Master_Addr: 1

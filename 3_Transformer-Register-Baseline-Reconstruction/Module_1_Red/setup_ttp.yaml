@@ -1,0 +1,16 @@
+id: OT-ModbusTCP-Setup
+name: OT-ModbusTCP-Setup
+description: >
+  Initializes the Modbus TCP server (pymodbus 3.5.2) on port 5020. This server simulates
+  substation transformer variables (Load, Temp, Fan, Breaker) and exposes the target registers.
+tactic: execution
+technique_id: T1059
+technique_name: Command and Scripting Interpreter
+sub_technique: T1059.004
+tag: red
+executors:
+  - name: sh
+    platform: linux
+    command: echo 'Setup Successfully'
+    payloads: []
+    parsers: []

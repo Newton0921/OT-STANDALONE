@@ -1,0 +1,15 @@
+id: OT-ModbusTCP-Attack
+name: OT-ModbusTCP-Attack
+description: >
+  Executes the Modbus TCP reconnaissance and scan attack script.
+tactic: discovery
+technique_id: T1046
+technique_name: Network Service Discovery
+sub_technique: None
+tag: blue
+executors:
+  - name: sh
+    platform: linux
+    command: ./red_attack.sh 127.0.0.1 5020 --repeat 3 --delay 2
+    payloads: []
+    parsers: []

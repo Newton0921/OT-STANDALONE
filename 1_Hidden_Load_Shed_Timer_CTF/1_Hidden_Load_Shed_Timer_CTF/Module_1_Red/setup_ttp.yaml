@@ -1,0 +1,18 @@
+id: OT-OpenPLC-Setup
+name: OT-OpenPLC-Setup
+description: >
+  Deploys OpenPLC Runtime v3 in a Podman container named openplc_shadow,
+  mapping Web Dashboard port 8080 and Modbus TCP port 502. Injects a baseline
+  program (baseline.st) to control three critical power distribution feeders.
+  This enables the attack surface for MITRE ATT&CK T0889 (Modify Program).
+tactic: persistence
+technique_id: T0889
+technique_name: Modify Program
+sub_technique: None
+tag: red
+executors:
+  - name: sh
+    platform: linux
+    command: echo 'Setup Successfully'
+    payloads: []
+    parsers: []

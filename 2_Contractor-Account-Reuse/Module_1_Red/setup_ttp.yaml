@@ -1,0 +1,19 @@
+id: OT-SCADA-Webstation-Setup
+name: OT-SCADA-Webstation-Setup
+description: >
+  Installs base Python dependencies, deploys a mock Rapid SCADA Webstation HMI
+  listening on port 10008, starts a Modbus TCP simulator on port 5020, and
+  spins up an unsecured credential leak HTTP server on port 8081. This enables
+  the attack surface for MITRE ATT&CK T0859 (Valid Accounts).
+tactic: persistence
+technique_id: T0859
+technique_name: Valid Accounts
+sub_technique: None
+tag: red
+service_availability_id: b78e1d2c-c5a4-4a25-9d3c-623b05a7f921
+executors:
+  - name: sh
+    platform: linux
+    command: sudo ./setup.sh
+    payloads: []
+    parsers: []

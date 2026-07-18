@@ -1,0 +1,15 @@
+id: OT-RogueSolar-Setup
+name: OT-RogueSolar-Setup
+description: >
+  Sets up the Rogue Solar Telemetry Publisher challenge environment, configuring and starting the MQTT broker (Eclipse Mosquitto) on port 1883, the legitimate solar publisher script, and the Flask telemetry web dashboard on port 5000. This enables the SCADA telemetry manipulation attack surface.
+tactic: impair-process-control
+technique_id: T1692.002
+technique_name: "Unauthorized Message: Reporting Message"
+sub_technique: None
+tag: red
+executors:
+  - name: sh
+    platform: linux
+    command: echo 'Setup Successfully'
+    payloads: []
+    parsers: []

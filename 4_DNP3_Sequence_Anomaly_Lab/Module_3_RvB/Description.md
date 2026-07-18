@@ -1,0 +1,5 @@
+# Scenario Briefing
+
+This exercise takes place within a simulated feeder substation environment utilizing the DNP3 protocol in a master/outstation architecture. The outstation controls a critical feeder breaker. Business policy dictates that all physical breaker operations must originate from authorized SCADA master addresses and follow strict Select-Before-Operate (SBO) safety sequences to prevent accidental or malicious actuation.
+
+The objective of this exercise is to execute and analyze a protocol sequence anomaly (MITRE T1692.001 / TA0106) affecting this environment. Participants will demonstrate how misconfigurations in DNP3 stack implementations allow for safety sequence bypasses, and conversely, how defenders can parse protocol artifacts to identify unauthorized process control commands.

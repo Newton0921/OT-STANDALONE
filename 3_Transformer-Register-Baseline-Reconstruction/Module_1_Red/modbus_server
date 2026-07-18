@@ -1,0 +1,196 @@
+#!/usr/bin/env python3
+"""
+Modbus TCP Server — Transformer Substation Simulator
+Compatible with pymodbus 3.5.2 on Python 3.11+
+
+Key design decisions:
+  - Uses StartAsyncTcpServer (the stable high-level API in 3.5.x)
+  - Uses request_tracer callback for logging (avoids fragile handler subclassing)
+  - DataBlock size = 101 to accommodate the +1 internal offset in ModbusSlaveContext
+  - Initial values set via SlaveContext.setValues() which handles offset automatically
+  - Process simulation runs as a concurrent asyncio task
+"""
+import asyncio
+import random
+import sys
+import os
+import json
+from datetime import datetime
+from pymodbus.server import StartAsyncTcpServer
+from pymodbus.datastore import (
+    ModbusSequentialDataBlock,
+    ModbusSlaveContext,
+    ModbusServerContext,
+)
+
+LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "modbus_server.log")
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+def load_config():
+    """Locate and load the register map JSON from known paths."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.join(script_dir, ".register_map.json"),
+        os.path.join(script_dir, "..", ".register_map.json"),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            with open(p) as f:
+                return json.load(f)
+    raise FileNotFoundError("Configuration file .register_map.json not found!")
+
+
+# ---------------------------------------------------------------------------
+# Logging via request_tracer callback
+# ---------------------------------------------------------------------------
+def request_tracer(request, *addr):
+    """Called by pymodbus for every incoming request. Appends to log file."""
+    try:
+        fc = request.function_code
+        address = request.address
+        qty = getattr(request, "count", 1)
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_line = (
+            f"{timestamp} - Client: {addr[0] if addr else 'Unknown'}"
+            f" - FC: {fc} - Addr: {address} - Qty: {qty}"
+            f" - Result: Success\n"
+        )
+        with open(LOG_FILE, "a") as f:
+            f.write(log_line)
+    except Exception:
+        pass
+
+
+# ---------------------------------------------------------------------------
+# Physical Process Simulation
+# ---------------------------------------------------------------------------
+async def update_registers(context, config):
+    """Continuously update Modbus registers to simulate transformer physics.
+    This function now reads coil/discrete states from the datastore so that
+    external client writes affect the internal simulation (e.g., turning the
+    cooling fan on/off or opening the breaker). Sensor registers (inputs) are
+    presented with realistic noise.
+    """
+    load_addr = config["LoadAddr"]
+    temp_addr = config["TempAddr"]
+    fan_addr = config["FanAddr"]
+    breaker_addr = config["BreakerAddr"]
+
+    # Initialize physical state variables
+    current_load = 100.0  # MW
+    current_temp = 65.0   # °C
+    fan_state = 0
+    breaker_state = 1
+    trip_timer = 0
+
+    while True:
+        try:
+            # Read latest coil / discrete values written by a client
+            coil_vals = context[0].getValues(1, fan_addr, count=1)
+            if coil_vals:
+                fan_state = int(coil_vals[0])
+            disc_vals = context[0].getValues(2, breaker_addr, count=1)
+            if disc_vals:
+                breaker_state = int(disc_vals[0])
+
+            # Breaker / Load model
+            if breaker_state == 1:
+                current_load = max(50.0, min(150.0,
+                    current_load + random.uniform(-4.0, 4.0)))
+                if current_load > 140.0 and random.random() < 0.15:
+                    breaker_state = 0
+                    current_load = 0.0
+                    trip_timer = 5
+            else:
+                current_load = 0.0
+                trip_timer -= 2
+                if trip_timer <= 0:
+                    breaker_state = 1
+                    current_load = 80.0
+
+            # Thermal model with client override check
+            temp_override = context[0].getValues(3, temp_addr, count=1)
+            if temp_override and temp_override[0] == 0:
+                current_temp = 0.0
+            else:
+                target_temp = 40.0 + (current_load - 50.0) * 0.4
+                if fan_state == 1:
+                    target_temp -= 25.0
+                temp_change = ((target_temp - current_temp) * 0.05
+                               + random.uniform(-0.3, 0.3))
+                current_temp = max(40.0, min(90.0, current_temp + temp_change))
+
+            # Fan hysteresis (auto control)
+            if current_temp > 75.0:
+                fan_state = 1
+            elif current_temp < 60.0:
+                fan_state = 0
+
+            # Write updated physical state back
+            context[0].setValues(3, load_addr, [int(current_load)])
+            context[0].setValues(4, temp_addr, [int(current_temp)])
+            context[0].setValues(1, fan_addr, [fan_state])
+            context[0].setValues(2, breaker_addr, [breaker_state])
+
+            # Input registers with noise (reuse same address for temp input)
+            noisy_temp = int(current_temp + random.gauss(0, 0.5)) if current_temp > 0.0 else 0
+            context[0].setValues(4, temp_addr, [noisy_temp])
+        except Exception:
+            pass
+        await asyncio.sleep(2)
+
+
+# ---------------------------------------------------------------------------
+# Server Entry Point
+# ---------------------------------------------------------------------------
+async def run_server():
+    config = load_config()
+
+    # Allocate 101-element blocks (indices 0-100).
+    # ModbusSlaveContext adds +1 internally, so protocol address 0..99
+    # maps to internal indices 1..100.  101 elements guarantees coverage.
+    coils     = ModbusSequentialDataBlock(0, [0] * 101)
+    discretes = ModbusSequentialDataBlock(0, [0] * 101)
+    holdings  = ModbusSequentialDataBlock(0, [0] * 101)
+    inputs    = ModbusSequentialDataBlock(0, [0] * 101)
+
+    store = ModbusSlaveContext(
+        di=discretes, co=coils, hr=holdings, ir=inputs
+    )
+    context = ModbusServerContext(slaves=store, single=True)
+
+    # Populate initial real values via SlaveContext (handles +1 offset)
+    store.setValues(1, config["FanAddr"],     [0])    # Fan OFF
+    store.setValues(2, config["BreakerAddr"], [1])    # Breaker CLOSED
+    store.setValues(3, config["LoadAddr"],    [100])  # 100 MW
+    store.setValues(4, config["TempAddr"],    [65])   # 65 C
+    store.setValues(3, config["TempAddr"],    [999])  # Initial temperature holding register (999 = No override)
+
+    # Populate decoys via SlaveContext
+    for addr, val in zip(config["DecoyCoilAddrs"], config["DecoyCoilValues"]):
+        store.setValues(1, addr, [val])
+    for addr, val in zip(config["DecoyDiscreteAddrs"], config["DecoyDiscreteValues"]):
+        store.setValues(2, addr, [val])
+    for addr, val in zip(config["DecoyHoldingAddrs"], config["DecoyHoldingValues"]):
+        store.setValues(3, addr, [val])
+    for addr, val in zip(config["DecoyInputAddrs"], config["DecoyInputValues"]):
+        store.setValues(4, addr, [val])
+
+    # Start background process simulation
+    asyncio.create_task(update_registers(context, config))
+
+    print(f"[+] Modbus TCP server listening on 0.0.0.0:5020", flush=True)
+    await StartAsyncTcpServer(
+        context,
+        address=("0.0.0.0", 5020),
+        request_tracer=request_tracer,
+    )
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(run_server())
+    except KeyboardInterrupt:
+        sys.exit(0)

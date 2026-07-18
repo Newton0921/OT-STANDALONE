@@ -1,0 +1,16 @@
+id: OT-DNP3-Sequence-Anomaly-RvB-Setup
+name: OT-DNP3-Sequence-Anomaly-RvB-Setup
+description: >
+  Initializes the DNP3 Protocol Sequence Anomaly RvB environment.
+tactic: execution
+technique_id: T1692
+technique_name: Unauthorized Message
+sub_technique: T1692.001
+tag: red
+service_availability_id: b5ef1b70-137a-42c6-95e2-e1d5a7d7f763
+executors:
+  - name: sh
+    platform: linux
+    command: echo 'Setup Successfully'
+    payloads: []
+    parsers: []

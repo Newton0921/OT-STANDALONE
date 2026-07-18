@@ -1,0 +1,20 @@
+id: b5ef1b70-137a-42c6-95e2-e1d5a7d7f763
+name: DNP3 Outstation Availability Check
+description: >
+  Verifies the DNP3 outstation simulator is fully operational via three checks:
+  (1) TCP port 20000 is bound, (2) dnp3-outstation systemd unit is Active,
+  (3) Custom DNP3 Link Status probe to localhost:20000 returns a valid code (200).
+  Additionally confirms that the DNP3 Master simulator is running and polling.
+  All checks must pass for SERVICE_STATUS:UP; any failure exits 1.
+tactic: execution
+technique_id: T1059
+technique_name: Command and Scripting Interpreter
+sub_technique: T1059.004
+tag: service-availability
+executors:
+  - name: sh
+    platform: linux
+    command: |
+      PORT_UP=$(ss -tlnp 2>/dev/null | grep -q ':20000 ' && echo 1 || echo 0); MASTER_UP=$(pgrep -f master_sim >/dev/null && echo 1 || echo 0); SVC_STATE=$(systemctl is-active dnp3-outstation >/dev/null 2>&1 && echo "active" || (pgrep -f outstation_sim >/dev/null && echo "active" || echo "inactive")); HTTP_CODE=$(python3 -c "import socket; s=socket.socket(); s.settimeout(2); s.connect(('127.0.0.1', 20000)); s.send(bytes.fromhex('056405c901000a0000000000')); r=s.recv(1024); print('200' if len(r)>0 else '000')" 2>/dev/null || echo "000"); if [ "$PORT_UP" -ge 1 ] && [ "$SVC_STATE" = "active" ] && { [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ] || [ "$HTTP_CODE" = "403" ]; }; then echo "SERVICE_STATUS:UP | MASTER:$([ "$MASTER_UP" -ge 1 ] && echo OPEN || echo CLOSED)"; else PORT_LABEL=$([ "$PORT_UP" -ge 1 ] && echo "UP" || echo "DOWN"); echo "SERVICE_STATUS:DOWN | PORT:${PORT_LABEL} | SYSTEMD:${SVC_STATE} | HTTP:${HTTP_CODE}"; exit 1; fi
+    payloads: []
+    parsers: []

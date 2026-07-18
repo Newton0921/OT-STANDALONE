@@ -1,0 +1,15 @@
+id: OT-Contractor-Account-Reuse-RvB-Setup
+name: Contractor Account Reuse — RvB Setup
+description: "Initializes the joint Red vs Blue environment."
+tactic: persistence
+technique_id: T0859
+technique_name: Valid Accounts
+sub_technique: None
+tag: red
+service_availability_id: c89a0b12-d4e5-4f6a-8b7c-9d0e1f2a3b4c
+executors:
+  - name: sh
+    platform: linux
+    command: echo 'Setup Successfully'
+    payloads: []
+    parsers: []

@@ -1,0 +1,17 @@
+id: OT-OpenPLC-Setup
+name: OT-OpenPLC-Setup
+description: >
+  OpenPLC Runtime v3 is installed and configured on the target host. No specific CVEs are assigned, but insecure default credentials (CWE-1188) are exposed on HTTP port 8080. Additionally, Modbus TCP is exposed on port 502. This setup enables the Web API attack surface, allowing authorized program upload and modifications (T0889) to disrupt physical process controls.
+tactic: persistence
+technique_id: T0889
+technique_name: Modify Program
+sub_technique: None
+tag: red
+service_availability_id: a6ef1b70-137a-42c6-95e2-e1d5a7d7f763
+executors:
+  - name: sh
+    platform: linux
+    command: |
+      bash /home/newton/Hacktify/1_Hidden_Load_Shed_Timer_CTF/1_Hidden_Load_Shed_Timer_CTF/Module_3_RvB/setup.sh
+    payloads: []
+    parsers: []

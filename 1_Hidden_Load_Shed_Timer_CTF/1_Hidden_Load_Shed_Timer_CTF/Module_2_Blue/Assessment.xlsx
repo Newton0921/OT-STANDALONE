@@ -1,0 +1,6 @@
+[Q#],[Type],[Question],[Option A],[Option B],[Option C],[Option D],[Answer],[Explanation]
+Q1,MCQ,What runtime anomaly was observed in the OpenPLC Monitoring tab?,Feeder 1 tripped instantly,Feeder 3 flipped to FALSE every 60s,All feeders shut down,Modbus port closed,Feeder 3 flipped to FALSE every 60s,The hidden TON timer forces this behavior specifically on %QX0.2.
+Q2,MCQ,Which log artifact indicates that the logic was tampered with?,Cron execution log,Failed SSH attempts,active_program.st overwritten via WebAPI,High CPU utilization,active_program.st overwritten via WebAPI,Found in the openplc_audit.log.
+Q3,MCQ,What standard Linux tool is best used to quickly compare the baseline and active source code?,nmap,grep,diff,chmod,diff,`diff` outputs the exact line-by-line differences between the two files.
+Q4,Fill in the Blank,What was the source IP address that uploaded the malicious project file?,[Blank],[Blank],[Blank],[Blank],10.10.50.15,Found in the openplc_audit.log provided in evidence.
+Q5,Fill in the Blank,Provide the exact variable declaration string added by the attacker for the timer.,[Blank],[Blank],[Blank],[Blank],Malicious_Timer : TON;,Found by performing a diff on the baseline and tampered ST files.

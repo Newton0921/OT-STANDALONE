@@ -1,0 +1,19 @@
+id: 6435c9ce-6766-42a3-8e37-359880c3c6fd
+name: ModbusTCP Availability Check
+description: >
+  Verifies Modbus TCP simulator server is fully operational via three checks:
+  (1) TCP port 5020 is bound, (2) modbus_server systemd unit is Active,
+  (3) Custom Modbus TCP probe to localhost:5020 returns a valid code (200).
+  All checks must pass for SERVICE_STATUS:UP; any failure exits 1.
+tactic: execution
+technique_id: T1059
+technique_name: Command and Scripting Interpreter
+sub_technique: T1059.004
+tag: service-availability
+executors:
+  - name: sh
+    platform: linux
+    command: |
+      PORT_UP=$(ss -tlnp 2>/dev/null | grep -q ':5020 ' && echo 1 || echo 0); SECONDARY_UP=1; SVC_STATE=$(systemctl is-active modbus_server 2>/dev/null || echo "inactive"); HTTP_CODE=$(python3 -c "from pymodbus.client import ModbusTcpClient; client=ModbusTcpClient('127.0.0.1', port=5020); print(200 if client.connect() and not client.read_holding_registers(10, count=1).isError() else 0)" 2>/dev/null || echo "000"); if [ "$PORT_UP" -ge 1 ] && [ "$SVC_STATE" = "active" ] && { [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ] || [ "$HTTP_CODE" = "403" ]; }; then echo "SERVICE_STATUS:UP | MODBUS:$([ "$SECONDARY_UP" -ge 1 ] && echo OPEN || echo CLOSED)"; else PORT_LABEL=$([ "$PORT_UP" -ge 1 ] && echo "UP" || echo "DOWN"); echo "SERVICE_STATUS:DOWN | PORT:${PORT_LABEL} | SYSTEMD:${SVC_STATE} | HTTP:${HTTP_CODE}"; exit 1; fi
+    payloads: []
+    parsers: []

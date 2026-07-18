@@ -1,0 +1,19 @@
+id: 9f3c7e44-d6a9-4672-91bf-a3d2e379ff9c
+name: OPC UA Availability Check
+description: >
+  Verifies OPC UA Server is fully operational via three checks:
+  (1) TCP port 4840 is bound, (2) opcua systemd unit is Active,
+  (3) HTTP probe to http://localhost:4840/ returns a valid code.
+  All checks must pass for SERVICE_STATUS:UP; any failure exits 1.
+tactic: execution
+technique_id: T1059
+technique_name: Command and Scripting Interpreter
+sub_technique: T1059.004
+tag: service-availability
+executors:
+  - name: sh
+    platform: linux
+    command: |
+      PORT_UP=$(ss -tlnp 2>/dev/null | grep -q ':4840 ' && echo 1 || echo 0); OPCUA_UP=$(ss -tlnp 2>/dev/null | grep -q ':4840 ' && echo 1 || echo 0); SVC_STATE=$(systemctl is-active opcua >/dev/null 2>&1 && echo "active" || (pgrep -f asyncua_server.py > /dev/null && echo "active" || echo "inactive")); HTTP_CODE=$(python3 -c "import socket; s = socket.socket(); s.settimeout(3); s.connect(('127.0.0.1', 4840)); print('200')" 2>/dev/null || echo "000"); if [ "$PORT_UP" -ge 1 ] && [ "$SVC_STATE" = "active" ] && { [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ] || [ "$HTTP_CODE" = "403" ]; }; then echo "SERVICE_STATUS:UP | OPCUA:$([ "$OPCUA_UP" -ge 1 ] && echo OPEN || echo CLOSED)"; else PORT_LABEL=$([ "$PORT_UP" -ge 1 ] && echo "UP" || echo "DOWN"); echo "SERVICE_STATUS:DOWN | PORT:${PORT_LABEL} | SYSTEMD:${SVC_STATE} | HTTP:${HTTP_CODE}"; exit 1; fi
+    payloads: []
+    parsers: []

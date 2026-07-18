@@ -1,0 +1,10 @@
+TRANSFORMER SUBSTATION - PROCESS DESCRIPTION
+--------------------------------------------
+This system monitors a critical distribution transformer.
+Process Variables:
+- Cooling Fan State: Toggles ON/OFF based on thermal load.
+- Breaker Position: Indicates if the primary circuit is OPEN or CLOSED.
+- Transformer Load: Measured in Megawatts (MW). Fluctuates continuously between 50 MW and 150 MW.
+- Oil Temperature: Measured in Celsius (C). Drifts slowly between 40 C and 90 C.
+
+Note: Decoy sensors are present. Address mapping is strictly confidential.
