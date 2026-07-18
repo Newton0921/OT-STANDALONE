@@ -74,19 +74,3 @@ The use of the wildcards (#) paired with the readwrite permission granted any co
 5. Defensive Remediation Plan
 To permanently close this vector and secure the telemetry pipeline, implement the following phased remediation:
 
-Phase 1: Immediate Hardening (Broker Configuration)
-Disable anonymous access and enforce explicit user authorization. Update mosquitto.conf immediately:
-
-Ini, TOML
-# /etc/mosquitto/mosquitto.conf
-allow_anonymous false
-password_file /etc/mosquitto/passwd
-acl_file /etc/mosquitto/acl
-Generate credentials for legitimate devices using the Mosquitto password utility:
-
-Bash
-mosquitto_passwd -c /etc/mosquitto/passwd inverter_site7
-mosquitto_passwd /etc/mosquitto/passwd ems_dashboard
-![Uploading image.png…]()
-
-
