@@ -9,11 +9,6 @@ Exfiltrate leaked credentials belonging to an external maintenance contractor fr
 * **Backup/Internal Dev Server Port:** `8081`
 * **Target Account:** `contractor_maint`
 
-## Scoring Logic
-* **Points:** 100 points
-* **Condition:** Successfully log into the Rapid SCADA Webstation using the contractor's credentials, navigate to the restricted feeder view, and recover the flag.
-* **Flag Artifact:** `FLAG{contractor_access_not_revoked_9a38f}`
-
 ---
 
 ## Detailed Manual Step-by-Step Walkthrough
