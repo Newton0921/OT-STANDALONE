@@ -89,6 +89,7 @@ or
 
 tshark -x -r /opt/dnp3_lab/pcap/dnp3_traffic.pcap | head -n 20
 
+<img width="822" height="487" alt="image" src="https://github.com/user-attachments/assets/cd35320f-9db0-4c02-9aa2-02e0e58e43fb" />
 
 
 05 64 -> The DNP3 Start Bytes. This confirms you are looking at a DNP3 frame.
