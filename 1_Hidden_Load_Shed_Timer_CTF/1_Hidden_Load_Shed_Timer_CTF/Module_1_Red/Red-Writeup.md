@@ -17,6 +17,8 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
    * **Username**: `openplc`
    * **Password**: `openplc`
 
+<img width="538" height="617" alt="image" src="https://github.com/user-attachments/assets/05cfd0b3-203b-43f6-aaeb-4f7a88035b8c" />
+
 ### Step 2: Logic Development & Baseline Deployment
 1. Create your own baseline program named `baseline.st` (you can base it on the template in `engineering_baseline/baseline.st`) to configure the three critical feeders. Define the variables and force `FEEDER_1_CMD` (`%QX0.0`), `FEEDER_2_CMD` (`%QX0.1`), and `FEEDER_3_CMD` (`%QX0.2`) to `TRUE`:
    ```pascal
@@ -38,6 +40,7 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
      END_RESOURCE
    END_CONFIGURATION
    ```
+   
 2. In the OpenPLC Web UI, navigate to the **Programs** tab in the sidebar.
 3. Select **Upload Program**, choose your `baseline.st` file, and upload it.
 4. Once uploaded, click **Launch** or **Go to Dashboard** to trigger compilation and start the runtime in a clean state.
@@ -82,6 +85,8 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
 3. Choose your newly created `malicious.st` file.
 4. Name the program `Update_Routine` to blend in, and click **Upload**.
 5. Once uploaded, click **Launch** or **Go to Dashboard** to trigger the Structured Text compiler. OpenPLC will compile the code to C++, link the binary, and restart the runtime background server automatically. Verify the compilation console output prints `Compilation successful!`.
+<img width="946" height="707" alt="image" src="https://github.com/user-attachments/assets/2b997ef6-e334-4c04-968a-6f4a44c2236c" />
+
 
 ### Step 4: Verification
 1. Go to the **Dashboard** or **Monitoring** tab.
