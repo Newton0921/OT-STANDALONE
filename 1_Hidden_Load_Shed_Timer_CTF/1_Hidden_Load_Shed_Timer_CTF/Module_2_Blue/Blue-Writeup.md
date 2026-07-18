@@ -1,122 +1,57 @@
-# Blue Team Manual Writeup: Forensic Investigation & Recovery
+# Blue Team Walkthrough: Detecting a Modified Program
 
-## 1. Operational Overview
-The Blue Team is tasked with detecting, analyzing, and recovering from an unauthorized logic modification (T0889) affecting Substation Zero. The primary symptoms include periodic load-shedding on Feeder 3 (`%QX0.2`) with no reported mechanical faults.
+## Objective
+Your goal is to detect and document a malicious modification to the PLC logic (T0889) that is causing unexpected load shedding on `FEEDER_3_CMD`. 
 
----
+## Scoring Logic
+**BLUE scores** by correctly identifying ALL FOUR of the following:
+1. The added/changed ladder logic block containing the timer.
+2. The affected output coil (`FEEDER_3_CMD`).
+3. The download source (IP address and timestamp from logs).
+4. The SHA-256 hash mismatch between the baseline and active project file.
 
-## 2. Step-by-Step Forensic Walkthrough
+## Step-by-Step Forensics
 
-### Step 1: Observing runtime anomalies
-1. Navigate to the OpenPLC Monitoring Web interface at `http://localhost:8080` (log in with `openplc` / `openplc`).
-2. Go to the **Monitoring** page.
-3. Keep track of register `%QX0.2` (`FEEDER_3_CMD`). Observe that it periodically transitions from `TRUE` to `FALSE` for a brief instant every 60 seconds.
-4. If monitoring via Modbus TCP (port 502), you can query the coil states continuously.
+**Step 1: Observing Anomalies**
+1. Access the OpenPLC web interface (`http://<TARGET_IP>:8081` or `8080` depending on your deployment port).
+2. Log in with `openplc` / `openplc`.
+3. Go to the **Monitoring** tab. You will see `%QX0.2` (Feeder 3) periodically drop to `FALSE` every 60 seconds, which contradicts normal operations.
 
-### Step 2: Analyzing Application Logs
-1. Access the log files on the forensic workstation at `./evidence_logs/openplc_audit.log` (or retrieve the log from the running container `/docker_persistent/openplc_audit.log`):
-   ```bash
-   podman cp openplc_blue:/docker_persistent/openplc_audit.log ./openplc_audit.log
-   cat ./openplc_audit.log
+**Step 2: Log Review**
+1. Open the `./evidence_logs/openplc_audit.log` file on your forensic workstation.
+2. You will spot an unauthorized logic upload and a runtime restart.
+3. *Record the IP Address and Timestamp.* (Requirement #3)
+
+**Step 3: Reconstruct Baseline & Export Active Program**
+1. Reconstruct the clean engineering baseline program (`baseline.st`) based on the system design specifications (where Feeders 1, 2, and 3 are set to `TRUE`) and save it to `./investigation/baseline.st`:
+   ```pascal
+   PROGRAM baseline
+     VAR
+       FEEDER_1_CMD AT %QX0.0 : BOOL := TRUE;
+       FEEDER_2_CMD AT %QX0.1 : BOOL := TRUE;
+       FEEDER_3_CMD AT %QX0.2 : BOOL := TRUE;
+     END_VAR
+     FEEDER_1_CMD := TRUE;
+     FEEDER_2_CMD := TRUE;
+     FEEDER_3_CMD := TRUE;
+   END_PROGRAM
+
+   CONFIGURATION Config0
+     RESOURCE Res0 ON PLC
+       TASK TaskMain(INTERVAL := T#20ms, PRIORITY := 0);
+       PROGRAM Inst0 WITH TaskMain : baseline;
+     END_RESOURCE
+   END_CONFIGURATION
    ```
-2. **Key Indicators of Compromise (IOCs) found:**
-   * **Admin Login Event:** Log entries indicate an admin session established from an unexpected source IP (`10.10.50.15`).
-   * **Unauthorized Override:** A warning message stating: `SYSTEM: active_program.st overwritten via WebAPI`.
-   * **Unscheduled Restart:** Immediately following the override, the logs show: `SYSTEM: OpenPLC Runtime Restart Triggered`.
+2. Pull the live active (compromised) program from the running container:
+   `podman cp openplc_blue:/docker_persistent/st_files/active_malicious.st ./investigation/pulled_active.st`
+3. Run standard Linux hashes to compare them:
+   `sha256sum ./investigation/baseline.st`
+   `sha256sum ./investigation/pulled_active.st`
+4. Notice they do not match. *Record the hashes.* (Requirement #4)
 
----
-
-## 3. Technical Integrity Verification
-
-### Step 3: Cryptographic Hash Comparison
-1. Export the active program directly from the running container:
-   ```bash
-   podman cp openplc_blue:/docker_persistent/st_files/active_malicious.st ./pulled_active.st
-   ```
-2. Generate the SHA-256 hash of the pulled file and compare it to the baseline hash:
-   ```bash
-   # Calculate active program hash
-   sha256sum ./pulled_active.st
-   
-   # Read baseline hash from forensic workstation
-   cat ./investigation/baseline_hash.txt
-   ```
-3. **Forensic Findings:**
-   * **Baseline Hash:** `70d550c4046fa6f56d70a382b16f77886abb8cf5d9c7ad7d893db029452ab0ff`
-   * **Active Hash:** `a2672a4c1c423405d20f9e3c5b550caac07d67af821f6a921ea1545819c61c9d`
-   * **Verdict:** The hashes do not match, confirming program file integrity compromise.
-
-### Step 4: Logic Diffing
-Run a line-by-line diff to identify the exact code modifications:
-```bash
-diff -u ./investigation/baseline.st ./pulled_active.st
-```
-
-**Expected Diff Output:**
-```diff
---- ./investigation/baseline.st
-+++ ./pulled_active.st
-@@ -4,6 +4,8 @@
-     FEEDER_1_CMD AT %QX0.0 : BOOL := TRUE;
-     FEEDER_2_CMD AT %QX0.1 : BOOL := TRUE;
-     FEEDER_3_CMD AT %QX0.2 : BOOL := TRUE;
-+  END_VAR
-+  VAR
-+    Malicious_Timer : TON;
-+    Timer_Reset : BOOL := FALSE;
-   END_VAR
-   FEEDER_1_CMD := TRUE;
-   FEEDER_2_CMD := TRUE;
--  FEEDER_3_CMD := TRUE;
-+  Malicious_Timer(IN := NOT Timer_Reset, PT := T#60s);
-+
-+  IF Malicious_Timer.Q THEN
-+      FEEDER_3_CMD := FALSE;
-+      Timer_Reset := TRUE;
-+  ELSE
-+      FEEDER_3_CMD := TRUE;
-+      Timer_Reset := FALSE;
-+  END_IF;
- END_PROGRAM
-```
-This confirms that the timer block `Malicious_Timer` is executing every 60 seconds and driving `%QX0.2` to `FALSE`.
-
----
-
-## 4. Remediation and Incident Response
-
-### Step 1: Containment
-1. Stop the compromised container:
-   ```bash
-   podman stop openplc_blue
-   ```
-2. Disable network access to port 8080 from non-admin networks.
-
-### Step 2: Eradication
-1. Remove the malicious Structured Text files from the PLC's persistent directory.
-2. In a real-world scenario, rewrite the SQLite database records or deploy a fresh database to wipe any references to unauthorized programs.
-3. Change default credentials (`openplc` / `openplc`) via the dashboard settings or SQL query directly:
-   ```bash
-   # Update SQLite database to set custom password
-   # (Always change default credentials!)
-   ```
-
-### Step 3: Recovery & Re-baseline
-1. Copy the known-good baseline program back to the PLC container:
-   ```bash
-   podman cp ./investigation/baseline.st openplc_blue:/docker_persistent/st_files/baseline.st
-   ```
-2. Set the active program pointer back to the baseline:
-   ```bash
-   podman exec openplc_blue bash -c "echo 'baseline.st' > /docker_persistent/active_program"
-   ```
-3. Update the SQLite database table `Programs` to reference `baseline.st`:
-   ```bash
-   podman exec openplc_blue python3 -c \
-       "import sqlite3; conn = sqlite3.connect('/docker_persistent/openplc.db'); cur = conn.cursor(); cur.execute(\"INSERT OR REPLACE INTO Programs (Prog_ID, Name, Description, File, Date_upload) VALUES (18, 'baseline', 'Baseline program', 'baseline.st', 1527184953)\"); conn.commit(); conn.close()"
-   ```
-4. Restart the container to compile and execute the clean code:
-   ```bash
-   podman stop openplc_blue && sleep 2 && podman start openplc_blue
-   ```
-5. Verify register `%QX0.2` remains constantly `TRUE`.
+**Step 4: Logic Diffing**
+1. Run a Linux `diff` to spot the exact modification:
+   `diff ./investigation/baseline.st ./investigation/pulled_active.st`
+2. The output will clearly highlight the `Malicious_Timer : TON;` variable and the `IF Malicious_Timer.Q THEN` logic block. (Requirement #1)
+3. The `diff` explicitly shows `FEEDER_3_CMD := FALSE;` as the targeted output. (Requirement #2)
