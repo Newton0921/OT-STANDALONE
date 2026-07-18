@@ -89,15 +89,4 @@ mosquitto_passwd -c /etc/mosquitto/passwd inverter_site7
 mosquitto_passwd /etc/mosquitto/passwd ems_dashboard
 ![Uploading image.png…]()
 
-Phase 2: Implement Principle of Least Privilege (ACL Refinement)
-Rewrite the ACL file to enforce strict directional communication. Sensors should only write; dashboards should only read.
 
-Ini, TOML
-# /etc/mosquitto/acl
-
-# Solar Array Inverter (Producer) - Can ONLY publish telemetry
-user inverter_site7
-topic write grid/solar/site7/kw
-topic write grid/solar/site7/status
-
-#
