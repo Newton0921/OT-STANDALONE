@@ -63,6 +63,8 @@ Industrial facilities often run secondary web servers for internal documentation
 2. Enter the exfiltrated credentials:
    * **Username:** `contractor_maint`
    * **Password:** `Welcome123`
+   <img width="571" height="437" alt="image" src="https://github.com/user-attachments/assets/54937a08-d4a8-45b7-bdc5-254078ffa164" />
+
 3. Click **ESTABLISH SESSION**.
 4. The system authorizes the session, granting access to the primary HMI cockpit.
 
@@ -71,6 +73,8 @@ Industrial facilities often run secondary web servers for internal documentation
 2. In the sidebar, click on **🚨 Restricted Feeder**. This navigates to `/Substation_High_Voltage_Feeder` (ViewID: 102).
 3. Notice that the flag is initially locked with the message: **🔒 CRITICAL ARTIFACT LOCKED**.
 4. Since the HMI control buttons have been removed and the backend API enforces security controls, you must interact with the control API directly. To ensure command integrity, the endpoint requires:
+5. <img width="748" height="865" alt="image" src="https://github.com/user-attachments/assets/90a5a736-b265-4411-9969-f5e92891eeb4" />
+
    * A valid work order reference: `"work_order": "882"`.
    * A command authorization signature in the `X-Signature` header, computed as the SHA-256 hash of the string `username:work_order:password`.
      For this exercise, the signature input is `contractor_maint:882:Welcome123`. You can generate this hash using:
@@ -103,8 +107,8 @@ Industrial facilities often run secondary web servers for internal documentation
            -d '{"work_order":"882"}' \
            -X POST http://<Target-IP>:10008/api/breaker/trip
      ```
-5. This sends a live Modbus control instruction to write `0` to the breaker register.
-6. Reload the `/Substation_High_Voltage_Feeder` page in your browser or perform a GET request with curl. The schematic will update dynamically (turning the line status indicator red/OFF) and display the recovered flag:
+6. This sends a live Modbus control instruction to write `0` to the breaker register.
+7. Reload the `/Substation_High_Voltage_Feeder` page in your browser or perform a GET request with curl. The schematic will update dynamically (turning the line status indicator red/OFF) and display the recovered flag:
    `FLAG{contractor_access_not_revoked_9a38f}`
 
 ---
