@@ -59,8 +59,8 @@ To perform a network-level forensic investigation, inspect the PCAP capture file
    ```
    *Expected Output:*
    ```text
-   1
-   66
+   <img width="917" height="152" alt="image" src="https://github.com/user-attachments/assets/817f85f8-2a95-4d99-a1bf-381ab2063988" />
+
    ```
    *Forensic Finding:* Master Address `66` is present in the network traffic but does not exist in the whitelist.
 
@@ -70,7 +70,8 @@ To perform a network-level forensic investigation, inspect the PCAP capture file
    ```
    *Expected Output:*
    ```text
-   [Frame #] [Timestamp] 66  10  3  7
+<img width="922" height="103" alt="image" src="https://github.com/user-attachments/assets/5202633b-c87f-4bb5-a43d-cf087028967d" />
+
    ```
    *Forensic Finding:* Frame analysis validates that Master `66` sent a single Function Code `3` (Direct Operate) packet directly to Outstation `10` targeting Point Index `7`.
 
