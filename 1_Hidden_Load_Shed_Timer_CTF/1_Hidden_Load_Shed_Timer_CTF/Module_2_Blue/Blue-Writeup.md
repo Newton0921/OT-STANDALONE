@@ -10,6 +10,7 @@ Your goal is to detect and document a malicious modification to the PLC logic (T
 3. The download source (IP address and timestamp from logs).
 4. The SHA-256 hash mismatch between the baseline and active project file.
 
+
 ## Step-by-Step Forensics
 
 **Step 1: Observing Anomalies**
@@ -21,6 +22,7 @@ Your goal is to detect and document a malicious modification to the PLC logic (T
 1. Open the `./evidence_logs/openplc_audit.log` file on your forensic workstation.
 2. You will spot an unauthorized logic upload and a runtime restart.
 3. *Record the IP Address and Timestamp.* (Requirement #3)
+<img width="940" height="130" alt="image" src="https://github.com/user-attachments/assets/d62ffbc3-1e1a-4a39-8443-b710b28721c6" />
 
 **Step 3: Reconstruct Baseline & Export Active Program**
 1. Reconstruct the clean engineering baseline program (`baseline.st`) based on the system design specifications (where Feeders 1, 2, and 3 are set to `TRUE`) and save it to `./investigation/baseline.st`:
@@ -35,23 +37,27 @@ Your goal is to detect and document a malicious modification to the PLC logic (T
      FEEDER_2_CMD := TRUE;
      FEEDER_3_CMD := TRUE;
    END_PROGRAM
-
+S
    CONFIGURATION Config0
-     RESOURCE Res0 ON PLC
+     RESOURCE Res0 ON PLCS
        TASK TaskMain(INTERVAL := T#20ms, PRIORITY := 0);
        PROGRAM Inst0 WITH TaskMain : baseline;
      END_RESOURCE
    END_CONFIGURATION
-   ```
+   ````
 2. Pull the live active (compromised) program from the running container:
    `podman cp openplc_blue:/docker_persistent/st_files/active_malicious.st ./investigation/pulled_active.st`
 3. Run standard Linux hashes to compare them:
    `sha256sum ./investigation/baseline.st`
    `sha256sum ./investigation/pulled_active.st`
-4. Notice they do not match. *Record the hashes.* (Requirement #4)
+<img width="887" height="247" alt="image" src="https://github.com/user-attachments/assets/f173b25c-5e89-464b-813f-030917dd4eba" />
+
+5. Notice they do not match. *Record the hashes.* (Requirement #4)
 
 **Step 4: Logic Diffing**
 1. Run a Linux `diff` to spot the exact modification:
    `diff ./investigation/baseline.st ./investigation/pulled_active.st`
+<img width="661" height="642" alt="image" src="https://github.com/user-attachments/assets/bce8e791-2e4a-4114-b791-611ca2e85b3c" />
+
 2. The output will clearly highlight the `Malicious_Timer : TON;` variable and the `IF Malicious_Timer.Q THEN` logic block. (Requirement #1)
 3. The `diff` explicitly shows `FEEDER_3_CMD := FALSE;` as the targeted output. (Requirement #2)
