@@ -21,6 +21,7 @@ Your goal is to detect and document a malicious modification to the PLC logic (T
 1. Open the `./evidence_logs/openplc_audit.log` file on your forensic workstation.
 2. You will spot an unauthorized logic upload and a runtime restart.
 3. *Record the IP Address and Timestamp.* (Requirement #3)
+<img width="885" height="197" alt="image" src="https://github.com/user-attachments/assets/ea6bdd65-095a-4579-b684-e799611a3d2f" />
 
 **Step 3: Reconstruct Baseline & Export Active Program**
 1. Reconstruct the clean engineering baseline program (`baseline.st`) based on the system design specifications (where Feeders 1, 2, and 3 are set to `TRUE`) and save it to `./investigation/baseline.st`:
@@ -48,10 +49,14 @@ Your goal is to detect and document a malicious modification to the PLC logic (T
 3. Run standard Linux hashes to compare them:
    `sha256sum ./investigation/baseline.st`
    `sha256sum ./investigation/pulled_active.st`
-4. Notice they do not match. *Record the hashes.* (Requirement #4)
+   <img width="858" height="152" alt="image" src="https://github.com/user-attachments/assets/614923e7-225e-4abe-b108-634081e2872d" />
+
+5. Notice they do not match. *Record the hashes.* (Requirement #4)
 
 **Step 4: Logic Diffing**
 1. Run a Linux `diff` to spot the exact modification:
    `diff ./investigation/baseline.st ./investigation/pulled_active.st`
-2. The output will clearly highlight the `Malicious_Timer : TON;` variable and the `IF Malicious_Timer.Q THEN` logic block. (Requirement #1)
-3. The `diff` explicitly shows `FEEDER_3_CMD := FALSE;` as the targeted output. (Requirement #2)
+   <img width="697" height="557" alt="image" src="https://github.com/user-attachments/assets/0c095961-78b8-4e17-8302-564c47df6bdb" />
+
+3. The output will clearly highlight the `Malicious_Timer : TON;` variable and the `IF Malicious_Timer.Q THEN` logic block. (Requirement #1)
+4. The `diff` explicitly shows `FEEDER_3_CMD := FALSE;` as the targeted output. (Requirement #2)
