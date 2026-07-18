@@ -55,7 +55,9 @@ Technical Analysis: Solar inverters are bound by physical laws and ramping const
 The breach was not caused by a zero-day vulnerability or advanced cryptographic break, but rather by broken access control and missing authentication within the MQTT broker configuration.
 
 1. Anonymous Authentication Enabled
-Inspection of /tmp/mqtt_lab/config/mosquitto.conf revealed:
+Inspection of /<img width="917" height="131" alt="image" src="https://github.com/user-attachments/assets/f6307321-7376-4de5-9b6a-b0edf31666a1" />
+tmp/mqtt_lab/config/mosquitto.conf revealed:
+<img width="823" height="42" alt="image" src="https://github.com/user-attachments/assets/ea6f28e3-b92d-465c-8f0b-987dbcd88941" />
 
 Ini, TOML
 allow_anonymous true
@@ -67,6 +69,7 @@ Inspection of /tmp/mqtt_lab/config/acl revealed:
 Ini, TOML
 pattern readwrite grid/solar/site7/#
 The use of the wildcards (#) paired with the readwrite permission granted any connected client full authority to subscribe to, read, and overwrite any topic under the Site 7 solar hierarchy. There was no segregation between Producers (the solar inverters/sensors) and Consumers (the dashboard/analytics engines).
+<img width="537" height="61" alt="image" src="https://github.com/user-attachments/assets/743fc37d-63e2-4294-a9f7-1339705000dc" />
 
 5. Defensive Remediation Plan
 To permanently close this vector and secure the telemetry pipeline, implement the following phased remediation:
@@ -84,6 +87,8 @@ Generate credentials for legitimate devices using the Mosquitto password utility
 Bash
 mosquitto_passwd -c /etc/mosquitto/passwd inverter_site7
 mosquitto_passwd /etc/mosquitto/passwd ems_dashboard
+![Uploading image.png…]()
+
 Phase 2: Implement Principle of Least Privilege (ACL Refinement)
 Rewrite the ACL file to enforce strict directional communication. Sensors should only write; dashboards should only read.
 
@@ -95,12 +100,4 @@ user inverter_site7
 topic write grid/solar/site7/kw
 topic write grid/solar/site7/status
 
-# EMS Dashboard (Consumer) - Can ONLY read telemetry
-user ems_dashboard
-topic read grid/solar/site7/#
-Phase 3: Architectural & Pipeline Enhancements
-Transport Layer Security (MQTTS): Implement TLS 1.3 on port 8883 using Mutual TLS (mTLS). Requiring X.509 client certificates burned into the physical solar inverters prevents unauthorized devices on the local network from even establishing a TCP handshake.
-
-Ingress Anomaly Detection: Implement a validation pipeline (e.g., using Node-RED, Telegraf, or a custom middleware) between the broker and the dashboard. Configure strict rate-of-change (ΔkW / Δt) and hard boundary filters (min: 0, max: 60kW). Packets violating physical realities should be dropped and flagged to the SIEM.
-
-Network Segmentation: Place all OT/ICS sensors and brokers on an isolated VLAN (ISA/IEC 62443 Zone 3), separated from corporate enterprise networks (Zone 4) by a stateful industrial firewall.
+#
