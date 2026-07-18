@@ -93,3 +93,34 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
 2. Observe `FEEDER_3_CMD` (Address `%QX0.2`). It will read `TRUE` (online) for 60 seconds.
 3. At the 60-second mark, it will momentarily trip to `FALSE` (shedding load) for a single PLC scan cycle before auto-resetting.
 4. Once this trip occurs, the scoring is triggered and the Red Team objective is complete.
+
+
+  or use any script to check the feeder change
+  #!/usr/bin/env python3
+from pymodbus.client import ModbusTcpClient
+import time, datetime
+
+client = ModbusTcpClient('127.0.0.1', port=502)
+client.connect()
+print("[*] Python Modbus Polling Initialized on Coil 2...")
+
+last_state = True
+while True:
+    try:
+        result = client.read_coils(2, 1)
+        if not result.isError():
+            current_state = result.bits[0]
+            if last_state and not current_state:
+                print(f"[!] {datetime.datetime.now().time()} - ALERT: FEEDER_3_CMD tripped to FALSE!")
+            elif not last_state and current_state:
+                print(f"[+] {datetime.datetime.now().time()} - RECOVERY: FEEDER_3_CMD restored to TRUE.")
+            last_state = current_state
+        time.sleep(0.1)
+    except Exception as e:
+        pass
+
+
+<img width="800" height="137" alt="image" src="https://github.com/user-attachments/assets/b63e9c8e-b6ba-42a0-8555-8cc1ac52b3e9" />
+
+
+                                      
