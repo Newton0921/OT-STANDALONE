@@ -29,6 +29,8 @@ Industrial facilities often run secondary web servers for internal documentation
    ```bash
    curl -s http://127.0.0.1:8081/backup/
    ```
+   <img width="607" height="198" alt="image" src="https://github.com/user-attachments/assets/92242666-3428-46e8-975c-ef16ee279a11" />
+
 2. You will observe a directory listing containing a contractor maintenance notes log: `maint_notes_112.json`.
 3. Fetch and read the contents of this JSON file:
    ```bash
@@ -45,6 +47,8 @@ Industrial facilities often run secondary web servers for internal documentation
      "notes": "HV Feeder maintenance complete. Temporary password generated and stored as MD5 hash per security policy. Awaiting AD de-provisioning."
    }
    ```
+   <img width="875" height="200" alt="image" src="https://github.com/user-attachments/assets/e2441945-662f-4d63-b3c5-d6cdf6746393" />
+
 4. **Key Findings & Password Cracking:**
    * **Username:** `contractor_maint`
    * **Leaked Password Hash:** `133987b0b6ad0c01fc0ccbdae1b95449` (MD5)
