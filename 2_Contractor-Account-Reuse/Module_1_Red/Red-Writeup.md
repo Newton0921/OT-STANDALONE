@@ -54,6 +54,8 @@ Industrial facilities often run secondary web servers for internal documentation
    * **Leaked Password Hash:** `133987b0b6ad0c01fc0ccbdae1b95449` (MD5)
    * **Cracking the Hash:** Use an offline lookup database or tool (e.g., CrackStation or hashcat/john) to crack the MD5 hash. Cracking it reveals the cleartext password: `Welcome123`.
    * **Forensic Clue:** The work order was marked `CLOSED`, but the notes indicate that the account is "Awaiting active directory de-provisioning", suggesting poor account lifecycle management (MITRE ATT&CK T0859 - Valid Accounts).
+     <img width="896" height="806" alt="image" src="https://github.com/user-attachments/assets/31114e70-f59a-4a9f-ab6d-e50628fdcfb5" />
+
 
 ### Step 3: Exploiting Valid Accounts to Bypass HMI Perimeter
 1. Open your web browser and navigate to the Rapid SCADA Webstation login portal:
