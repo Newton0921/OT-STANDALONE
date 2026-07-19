@@ -76,17 +76,17 @@ Endpoint URL: opc.tcp://127.0.0.1:4840
 Authentication: Anonymous (No Credentials)
 Once connected, browse the Address Space pane on the left. Expand the Root -> Objects -> Generator1 folder. You will discover the following tree structure:
 
-text
+t```text
 Root
- └── Objects
-      └── Generator1 (NodeId: ns=2;i=1)
-           │
-           ├── ActivePower               (NodeId: ns=2;i=2)  [Read-Only]
-           ├── Voltage                   (NodeId: ns=2;i=3)  [Read-Only]
-           ├── ReactivePower             (NodeId: ns=2;i=4)  [Read-Only]
-           ├── ReactivePowerSetpoint     (NodeId: ns=2;i=5)  [Writable - TARGET!]
-           ├── FieldExcitationCurrent    (NodeId: ns=2;i=6)  [Read-Only]
-           └── RotorSpeed                (NodeId: ns=2;i=7)  [Read-Only]
+└── Objects
+    └── Generator1 (ns=2;i=1)
+        ├── ActivePower               (ns=2;i=2)  RO
+        ├── Voltage                   (ns=2;i=3)  RO
+        ├── ReactivePower             (ns=2;i=4)  RO
+        ├── ReactivePowerSetpoint     (ns=2;i=5)  RW  <-- Control Variable
+        ├── FieldExcitationCurrent    (ns=2;i=6)  RO
+        └── RotorSpeed                (ns=2;i=7)  RO
+```
 Step 3: Identify the Vulnerability
 If you click through the nodes in the Generator1 object, you will notice that parameters like Voltage and RotorSpeed have an AccessLevel of CurrentRead.
 
