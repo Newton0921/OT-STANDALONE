@@ -1,9 +1,3 @@
-Viewed service_availability_ttp.yaml:1-22
-Viewed Red-Writeup.md:1-25
-
-Here is the complete, step-by-step solution for Challenge 6 (**Generator Reactive-Power Setpoint**). 
-
-This challenge focuses on the **OPC UA** protocol, which is a modern, highly popular ICS communication standard.
 
 ### Step 1: Network Discovery (Scanning for OPC UA)
 First, the participant scans the network to locate the industrial service. OPC UA almost always runs on TCP port 4840.
