@@ -76,17 +76,21 @@ Endpoint URL: opc.tcp://127.0.0.1:4840
 Authentication: Anonymous (No Credentials)
 Once connected, browse the Address Space pane on the left. Expand the Root -> Objects -> Generator1 folder. You will discover the following tree structure:
 
-t```text
-Root
-└── Objects
-    └── Generator1 (ns=2;i=1)
-        ├── ActivePower               (ns=2;i=2)  RO
-        ├── Voltage                   (ns=2;i=3)  RO
-        ├── ReactivePower             (ns=2;i=4)  RO
-        ├── ReactivePowerSetpoint     (ns=2;i=5)  RW  <-- Control Variable
-        ├── FieldExcitationCurrent    (ns=2;i=6)  RO
-        └── RotorSpeed                (ns=2;i=7)  RO
-```
+
+
+flowchart TD
+    Root --> Objects
+    Objects --> Generator1["Generator1 (ns=2;i=1)"]
+
+    Generator1 --> AP["ActivePower (ns=2;i=2)<br/>RO"]
+    Generator1 --> V["Voltage (ns=2;i=3)<br/>RO"]
+    Generator1 --> RP["ReactivePower (ns=2;i=4)<br/>RO"]
+    Generator1 --> RPS["ReactivePowerSetpoint (ns=2;i=5)<br/>RW - Control Variable"]
+    Generator1 --> FEC["FieldExcitationCurrent (ns=2;i=6)<br/>RO"]
+    Generator1 --> RS["RotorSpeed (ns=2;i=7)<br/>RO"]
+
+
+
 Step 3: Identify the Vulnerability
 If you click through the nodes in the Generator1 object, you will notice that parameters like Voltage and RotorSpeed have an AccessLevel of CurrentRead.
 
