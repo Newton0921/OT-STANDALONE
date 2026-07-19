@@ -18,6 +18,8 @@ cat baseline_log.txt
 ```text
 [2026-06-18T10:00:00.000000] BASELINE | ReactivePowerSetpoint = 10.0 Mvar
 ```
+<img width="956" height="52" alt="image" src="https://github.com/user-attachments/assets/bc95a82f-3e7d-4f86-8cda-8d5baed6b728" />
+
 The normal operational setpoint is **10.0 Mvar**.
 
 ### Step 2: Investigate Active Sessions
@@ -31,6 +33,8 @@ cat session_log.txt
 [2026-06-18T10:15:00.000000] SESSION OPEN | SessionID: ns=1;i=102 | IP: 192.168.10.50 | Token: Username
 [2026-06-18T10:22:45.123456] SESSION OPEN | SessionID: ns=1;i=105 | IP: 10.10.10.100 | Token: Anonymous
 ```
+<img width="1026" height="72" alt="image" src="https://github.com/user-attachments/assets/ec46f651-b247-4856-b383-23219e42e8d6" />
+
 *Key Discovery:*
 An unauthorized connection was established from IP **10.10.10.100** at **10:22:45.123456** using an **Anonymous token** (SessionID: `ns=1;i=105`).
 
@@ -39,6 +43,8 @@ Correlate the unauthorized session with modifications inside the namespace:
 ```bash
 cat write_event_log.txt
 ```
+<img width="1072" height="87" alt="image" src="https://github.com/user-attachments/assets/c5c428ea-ac86-4246-9fb2-1d43e90dc465" />
+
 *Result:*
 ```text
 [2026-06-18T10:22:45.123456] WRITE EVENT | SessionID: ns=1;i=105 | NodeID: ns=2;i=5 | OldValue: 10.0 | NewValue: 75.0
@@ -51,6 +57,8 @@ Verify if the setpoint change persisted on the controller:
 ```bash
 cat value_change_log.txt
 ```
+<img width="978" height="87" alt="image" src="https://github.com/user-attachments/assets/af747e37-ee7a-4b75-a101-347d18b93ec4" />
+
 *Result:*
 ```text
 [2026-06-18T10:22:45.123456] VALUE CHANGE | NodeID: ns=2;i=5 | 10.0 -> 75.0
@@ -62,6 +70,8 @@ Review the process alarm log to see the operational impact of the modification:
 ```bash
 cat process_alarm_log.txt
 ```
+<img width="1202" height="102" alt="image" src="https://github.com/user-attachments/assets/6e6ea90b-944a-4bd4-a9b9-eaec1cf82844" />
+
 *Result:*
 ```text
 [2026-06-18T10:22:45.123456] ALARM | Type: DeviationAlarm | NodeID: ns=2;i=5 | ThresholdBreached: OUT OF BAND | AlarmValue: 75.0
