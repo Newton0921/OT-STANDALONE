@@ -1,4 +1,4 @@
-
+<img width="975" height="725" alt="image" src="https://github.com/user-attachments/assets/5fa81b63-9d61-4906-9177-47f5d3416299" />
 ### Step 1: Network Discovery (Scanning for OPC UA)
 First, the participant scans the network to locate the industrial service. OPC UA almost always runs on TCP port 4840.
 ```bash
@@ -113,14 +113,11 @@ Method A: Using the UaExpert GUI
 Drag the ReactivePowerSetpoint node into the middle "Data Access View" pane.
 Double-click the live Value cell (which currently reads 10.0).
 Type in the malicious payload: 75.0 and press Enter.
-Method B: Using the Command Line (opcua-client) If you prefer the terminal, you can push the malicious float directly to Node ns=2;i=5 using a standard OPC UA command-line tool:
 
-bash
-opcua-client write "opc.tcp://127.0.0.1:4840" "ns=2;i=5" --type Double 75.0
-Step 5: Verification
-As soon as the malicious setpoint (75.0) is pushed to the server, the backend ICS logic detects that the value has violently breached the approved operating band (5.0 to 15.0 Mvar).
+<img width="975" height="725" alt="image" src="https://github.com/user-attachments/assets/f84209d4-a338-4526-9f1f-15bed2bc8779" />
 
-A DeviationAlarm is immediately triggered in the process logs.
+
+
 
 Challenge Completed!
 
