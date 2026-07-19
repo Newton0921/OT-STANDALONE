@@ -56,8 +56,12 @@ Technical Analysis: Solar inverters are bound by physical laws and ramping const
 The breach was not caused by a zero-day vulnerability or advanced cryptographic break, but rather by broken access control and missing authentication within the MQTT broker configuration.
 
 1. Anonymous Authentication Enabled
-Inspection of /<img width="917" height="131" alt="image" src="https://github.com/user-attachments/assets/f6307321-7376-4de5-9b6a-b0edf31666a1" />
-tmp/mqtt_lab/config/mosquitto.conf revealed:
+Inspection of /
+
+<img width="917" height="131" alt="image" src="https://github.com/user-attachments/assets/f6307321-7376-4de5-9b6a-b0edf31666a1" />
+
+sudo cat tmp/mqtt_lab/config/mosquitto.conf revealed:
+
 <img width="823" height="42" alt="image" src="https://github.com/user-attachments/assets/ea6f28e3-b92d-465c-8f0b-987dbcd88941" />
 
 Ini, TOML
@@ -70,6 +74,7 @@ Inspection of /tmp/mqtt_lab/config/acl revealed:
 Ini, TOML
 pattern readwrite grid/solar/site7/#
 The use of the wildcards (#) paired with the readwrite permission granted any connected client full authority to subscribe to, read, and overwrite any topic under the Site 7 solar hierarchy. There was no segregation between Producers (the solar inverters/sensors) and Consumers (the dashboard/analytics engines).
+
 <img width="537" height="61" alt="image" src="https://github.com/user-attachments/assets/743fc37d-63e2-4294-a9f7-1339705000dc" />
 
 5. Defensive Remediation Plan
