@@ -58,11 +58,10 @@ To perform a network-level forensic investigation, inspect the PCAP capture file
    tshark -r /opt/dnp3_lab/pcap/dnp3_traffic.pcap -Y "dnp3" -T fields -e dnp3.src | sort -u
    ```
    *Expected Output:*
-   ```text
-   <img width="917" height="152" alt="image" src="https://github.com/user-attachments/assets/817f85f8-2a95-4d99-a1bf-381ab2063988" />
+   ```text'''
+<img width="917" height="152" alt="image" src="https://github.com/user-attachments/assets/817f85f8-2a95-4d99-a1bf-381ab2063988" />
 
-   ```
-   *Forensic Finding:* Master Address `66` is present in the network traffic but does not exist in the whitelist.
+*Forensic Finding:* Master Address `66` is present in the network traffic but does not exist in the whitelist.
 
 2. **Locate the Sequence Anomaly (Function Code 3):**
    ```bash
