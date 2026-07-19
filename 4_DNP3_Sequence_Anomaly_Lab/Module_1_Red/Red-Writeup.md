@@ -217,11 +217,9 @@ Upon sending the packet, check the raw output in the terminal.
     The outstation will return a DNP3 confirmation frame containing a response header and a CROB feedback structure. If successful, the response status byte will match `0x00` (Success).
 *   **Verification of State Change:**
     By checking the protocol logs, you can confirm that the outstation accepted the command:
-    ```text
+    ```text'''
+   <img width="907" height="230" alt="image" src="https://github.com/user-attachments/assets/fef99a61-d41d-4400-83fe-33436c3314c5" />
 
-
-    <img width="907" height="230" alt="image" src="https://github.com/user-attachments/assets/fef99a61-d41d-4400-83fe-33436c3314c5" />
-
-    [ANOMALY]  Master Addr: 66 | Outstation: 10 | FC: 3 (Direct Operate) | Index: 7 | Status: SUCCESS
-    [PROCESS_STATE_CHANGE] Feeder Breaker (Index 7) transitioned to OPEN state.
-    ```
+   [ANOMALY]  Master Addr: 66 | Outstation: 10 | FC: 3 (Direct Operate) | Index: 7 | Status: SUCCESS
+   [PROCESS_STATE_CHANGE] Feeder Breaker (Index 7) transitioned to OPEN state.
+   
