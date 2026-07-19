@@ -27,6 +27,7 @@ grep -A 1 -i "rogue_solar_client PUBLISH" /tmp/mqtt_lab/log/mosquitto.log
 Simulated Log Evidence:
 
 Plaintext
+
 <img width="922" height="105" alt="image" src="https://github.com/user-attachments/assets/92ae2729-5421-493e-b274-b5bf5ef71914" />
 
 
