@@ -69,10 +69,9 @@ To perform a network-level forensic investigation, inspect the PCAP capture file
    tshark -r /opt/dnp3_lab/pcap/dnp3_traffic.pcap -Y "dnp3.al.func == 3" -T fields -e frame.number -e frame.time -e dnp3.src -e dnp3.dst -e dnp3.al.func -e dnp3.al.index
    ```
    *Expected Output:*
-   ```text
+   ```text'''
 <img width="922" height="103" alt="image" src="https://github.com/user-attachments/assets/5202633b-c87f-4bb5-a43d-cf087028967d" />
 
-   ```
    *Forensic Finding:* Frame analysis validates that Master `66` sent a single Function Code `3` (Direct Operate) packet directly to Outstation `10` targeting Point Index `7`.
 
 ---
