@@ -101,9 +101,14 @@ This means an attacker can push unauthorized values directly to the generator's 
 Step 4: Execution (The Attack)
 The normal baseline for the Reactive Power Setpoint is 10.0 Mvar. To destabilize the generator and successfully solve the challenge, you must write a massive, out-of-bounds value (e.g., 75.0 Mvar) to the setpoint.
 
+<img width="1341" height="983" alt="image" src="https://github.com/user-attachments/assets/e92d998d-44b5-4884-9a9c-4a6da742b0b8" />
 You can execute this attack using either the UaExpert GUI or the command line.
 
 Method A: Using the UaExpert GUI
+
+
+<img width="965" height="488" alt="image" src="https://github.com/user-attachments/assets/6eb0584f-f8a3-4395-8408-b22acc5e7365" />
+
 
 Drag the ReactivePowerSetpoint node into the middle "Data Access View" pane.
 Double-click the live Value cell (which currently reads 10.0).
