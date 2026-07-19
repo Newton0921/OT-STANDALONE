@@ -1,4 +1,4 @@
-<img width="860" height="83" alt="image" src="https://github.com/user-attachments/assets/793f24ed-3be6-42f2-81c8-d134e51dbef5" /># Red Team Lab Walkthrough: DNP3 Sequence Anomaly (Manual Solution)
+# Red Team Lab Walkthrough: DNP3 Sequence Anomaly (Manual Solution)
 
 ## Objective
 Demonstrate an **Impair Process Control** attack (**MITRE ATT&CK for ICS: T1692.001 / TA0106**) by issuing an unauthorized, raw DNP3 command message directly to a feeder breaker outstation, bypassing the stateful Select-Before-Operate (SBO) sequence.
