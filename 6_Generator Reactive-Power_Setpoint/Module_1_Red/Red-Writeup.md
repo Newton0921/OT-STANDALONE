@@ -60,4 +60,66 @@ As soon as the malicious setpoint (`75.0`) is pushed to the server, the server-s
 <img width="792" height="47" alt="image" src="https://github.com/user-attachments/assets/2656a72a-db9c-4a88-ad4e-78d68c77b8f6" />
 
 
+
+
+
+
+METHOD 2
+
+Step 1: Network Discovery (Port Scanning)
+Industrial Control Systems often use the OPC UA protocol for unified communications. OPC UA services traditionally run on TCP port 4840. Run a quick Nmap scan against the target to verify the port is exposed:
+
+bash
+nmap -p 4840 127.0.0.1
+Result: Port 4840 is confirmed to be open.
+
+Step 2: Connect and Enumerate the Namespace
+Unlike older protocols that use raw memory addresses (like Modbus), OPC UA has a rich, human-readable directory structure known as a Namespace.
+
+Open an OPC UA GUI Client (like UaExpert) and connect to the endpoint:
+
+Endpoint URL: opc.tcp://127.0.0.1:4840
+Authentication: Anonymous (No Credentials)
+Once connected, browse the Address Space pane on the left. Expand the Root -> Objects -> Generator1 folder. You will discover the following tree structure:
+
+text
+Root
+ └── Objects
+      └── Generator1 (NodeId: ns=2;i=1)
+           │
+           ├── ActivePower               (NodeId: ns=2;i=2)  [Read-Only]
+           ├── Voltage                   (NodeId: ns=2;i=3)  [Read-Only]
+           ├── ReactivePower             (NodeId: ns=2;i=4)  [Read-Only]
+           ├── ReactivePowerSetpoint     (NodeId: ns=2;i=5)  [Writable - TARGET!]
+           ├── FieldExcitationCurrent    (NodeId: ns=2;i=6)  [Read-Only]
+           └── RotorSpeed                (NodeId: ns=2;i=7)  [Read-Only]
+Step 3: Identify the Vulnerability
+If you click through the nodes in the Generator1 object, you will notice that parameters like Voltage and RotorSpeed have an AccessLevel of CurrentRead.
+
+However, if you inspect the ReactivePowerSetpoint node (ns=2;i=5), you will discover a critical misconfiguration: the AccessLevel is set to CurrentRead, CurrentWrite for Anonymous users!
+
+This means an attacker can push unauthorized values directly to the generator's control logic.
+
+Step 4: Execution (The Attack)
+The normal baseline for the Reactive Power Setpoint is 10.0 Mvar. To destabilize the generator and successfully solve the challenge, you must write a massive, out-of-bounds value (e.g., 75.0 Mvar) to the setpoint.
+
+You can execute this attack using either the UaExpert GUI or the command line.
+
+Method A: Using the UaExpert GUI
+
+Drag the ReactivePowerSetpoint node into the middle "Data Access View" pane.
+Double-click the live Value cell (which currently reads 10.0).
+Type in the malicious payload: 75.0 and press Enter.
+Method B: Using the Command Line (opcua-client) If you prefer the terminal, you can push the malicious float directly to Node ns=2;i=5 using a standard OPC UA command-line tool:
+
+bash
+opcua-client write "opc.tcp://127.0.0.1:4840" "ns=2;i=5" --type Double 75.0
+Step 5: Verification
+As soon as the malicious setpoint (75.0) is pushed to the server, the backend ICS logic detects that the value has violently breached the approved operating band (5.0 to 15.0 Mvar).
+
+A DeviationAlarm is immediately triggered in the process logs.
+
+Challenge Completed!
+
+
 **Challenge Completed!**
