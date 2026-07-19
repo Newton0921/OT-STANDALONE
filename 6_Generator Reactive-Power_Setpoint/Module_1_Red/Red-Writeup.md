@@ -57,5 +57,7 @@ asyncio.run(attack())
 
 ### Step 5: Verification
 As soon as the malicious setpoint (`75.0`) is pushed to the server, the server-side logic detects the massive parameter deviation (> 15.0 Mvar) and triggers the backend alarm. 
+<img width="792" height="47" alt="image" src="https://github.com/user-attachments/assets/2656a72a-db9c-4a88-ad4e-78d68c77b8f6" />
+
 
 **Challenge Completed!**
