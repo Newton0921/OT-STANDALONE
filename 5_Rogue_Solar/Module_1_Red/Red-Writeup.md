@@ -42,10 +42,8 @@ Use `nmap` to verify if the default MQTT service is active on the target host (`
 nmap -p 1883 127.0.0.1
 ```
 
-```text
 <img width="718" height="155" alt="image" src="https://github.com/user-attachments/assets/e6851430-d72e-4e3b-976b-3c9db4692d41" />
 
-```
 
 ### Step 2: Telemetry Eavesdropping (Sniffing Active Topics)
 Since MQTT uses a publish/subscribe architecture, you can eavesdrop on active communication by subscribing to the multi-level wildcard topic (`#`). This will receive every message routed through the broker.
@@ -54,10 +52,9 @@ mosquitto_sub -h 127.0.0.1 -p 1883 -t "#" -v
 ```
 
 **Expected Output:**
-```text
+
 <img width="902" height="173" alt="image" src="https://github.com/user-attachments/assets/b51d9752-852e-4864-af7e-b2f6974b765d" />
 
-```
 *Analysis: The client identifies the target topic as `grid/solar/site7/kw` and observes a telemetry baseline hovering around ~40 kW.*
 
 ### Step 3: Verifying Security Control Weakness (ACL Bypass)
