@@ -211,6 +211,9 @@ s.close()
 
 ---
 
+<img width="1131" height="47" alt="image" src="https://github.com/user-attachments/assets/a4d07765-3c80-4a7f-b468-d96677e264a8" />
+
+
 ### Step 4: Verify Response and Process State Change
 Upon sending the packet, check the raw output in the terminal.
 *   **Verification of Success Response:**
