@@ -1,4 +1,4 @@
-<img width="975" height="725" alt="image" src="https://github.com/user-attachments/assets/5fa81b63-9d61-4906-9177-47f5d3416299" />
+
 ### Step 1: Network Discovery (Scanning for OPC UA)
 First, the participant scans the network to locate the industrial service. OPC UA almost always runs on TCP port 4840.
 ```bash
