@@ -225,4 +225,7 @@ Upon sending the packet, check the raw output in the terminal.
 
    [ANOMALY]  Master Addr: 66 | Outstation: 10 | FC: 3 (Direct Operate) | Index: 7 | Status: SUCCESS
    [PROCESS_STATE_CHANGE] Feeder Breaker (Index 7) transitioned to OPEN state.
+
+   <img width="1847" height="353" alt="image" src="https://github.com/user-attachments/assets/2a2c05e6-9101-49a0-a5e2-9699369122ef" />
+
    
