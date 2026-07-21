@@ -26,17 +26,12 @@ To score 100% on the Blue Team side, you must answer the following 5 analytical 
    ```
 3. **Analyze the Logs:**
    * Look for normal operator/engineer login profiles. You will see authorized activity:
-     ```
-     [2026-06-17 08:00:12] INF [Operator1] Login successful from 192.168.1.50
-     [2026-06-17 09:15:00] INF [Engineer1] Login successful from 192.168.1.51
-     ```
+<img width="936" height="147" alt="image" src="https://github.com/user-attachments/assets/d236f936-c32d-40e3-8d35-670a02a01d41" />
+
      *These log entries represent daytime hours, originating from internal substation subnet ranges.*
    * Identify the anomalous, off-hours entries:
-     ```
-     [2026-06-18 03:15:22] INF [contractor_maint] Login successful from 203.0.113.42
-     [2026-06-18 03:17:05] INF [contractor_maint] Access to view 'Substation_High_Voltage_Feeder' (ViewID: 102)
-     [2026-06-18 03:45:10] INF [contractor_maint] Logout successful from 203.0.113.42
-     ```
+<img width="1067" height="142" alt="image" src="https://github.com/user-attachments/assets/ee643f07-8b5d-46ba-a579-0269da7bb606" />
+
 4. **Key Forensic Findings (Artifacts 1, 2, 3, 4):**
    * **Compromised Account:** `contractor_maint`
    * **Source IP Address:** `203.0.113.42` (An external/unrecognized IP outside the internal 192.168.1.x subnet).
@@ -49,19 +44,15 @@ To determine if this access was legitimate, correlate the timestamp with active 
    ```bash
    ls -la /var/log/substation_maintenance/
    ```
+   <img width="765" height="72" alt="image" src="https://github.com/user-attachments/assets/dc2dbffc-be1e-49d6-ac76-c09cc22f3be4" />
+
 2. View the closed work order file:
    ```bash
    cat /var/log/substation_maintenance/work_order_882_CLOSED.txt
    ```
    **File Content:**
-   ```
-   WORK ORDER: 882
-   SYSTEM: Substation High Voltage Feeder
-   TECHNICIAN: contractor_maint
-   STATUS: CLOSED
-   DATE: 2026-06-15
-   NOTES: Physical maintenance complete. System returned to operational status.
-   ```
+<img width="797" height="166" alt="image" src="https://github.com/user-attachments/assets/138259d0-0169-4c1b-ab9a-0f27f436967d" />
+
 3. **Correlate the Timeline:**
    * **Work Order Closure:** The high-voltage feeder maintenance was officially completed and closed on **2026-06-15**.
    * **System Access Event:** The `contractor_maint` account logged in and accessed the HMI on **2026-06-18** (3 days *after* the maintenance window had closed).
@@ -70,7 +61,6 @@ To determine if this access was legitimate, correlate the timestamp with active 
 
 ---
 
-## Incident Response & Remediation Recommendations
 
 1. **Immediate Threat Containment:**
    * Disable/lock the `contractor_maint` account in the Webstation database and Active Directory.
