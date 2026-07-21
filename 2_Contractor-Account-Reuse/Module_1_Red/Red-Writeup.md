@@ -68,12 +68,13 @@ Industrial facilities often run secondary web servers for internal documentation
 3. Click **ESTABLISH SESSION**.
 4. The system authorizes the session, granting access to the primary HMI cockpit.
 
-### Step 4: Accessing the Restricted Control Panel & Executing Process Control (Lateral Movement / Flag Recovery)
+### Step 4: Accessing the Restricted Control Panel & Executing Process Control 
 1. Examine the left-hand navigation sidebar. Unlike a standard operator session, the contractor account retains access to a restricted section.
 2. In the sidebar, click on **🚨 Restricted Feeder**. This navigates to `/Substation_High_Voltage_Feeder` (ViewID: 102).
 3. Notice that the flag is initially locked with the message: **🔒 CRITICAL ARTIFACT LOCKED**.
 4. Since the HMI control buttons have been removed and the backend API enforces security controls, you must interact with the control API directly. To ensure command integrity, the endpoint requires:
-5. <img width="748" height="865" alt="image" src="https://github.com/user-attachments/assets/90a5a736-b265-4411-9969-f5e92891eeb4" />
+<img width="1012" height="945" alt="image" src="https://github.com/user-attachments/assets/6d439944-9a58-4003-903f-37a88f0865cb" />
+
 
    * A valid work order reference: `"work_order": "882"`.
    * A command authorization signature in the `X-Signature` header, computed as the SHA-256 hash of the string `username:work_order:password`.
