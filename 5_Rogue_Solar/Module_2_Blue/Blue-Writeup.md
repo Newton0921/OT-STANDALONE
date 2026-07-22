@@ -72,12 +72,5 @@ Ini, TOML
 allow_anonymous true
 This setting instructed the broker to accept TCP connections from any IP address reaching port 1883 without challenging the client for a username, password, or cryptographic certificate.
 
-2. Overly Permissive Access Control Lists (ACL)
-Inspection of /tmp/mqtt_lab/config/acl revealed:
-
-Ini, TOML
-pattern readwrite grid/solar/site7/#
-The use of the wildcards (#) paired with the readwrite permission granted any connected client full authority to subscribe to, read, and overwrite any topic under the Site 7 solar hierarchy. There was no segregation between Producers (the solar inverters/sensors) and Consumers (the dashboard/analytics engines).
-
 
 
