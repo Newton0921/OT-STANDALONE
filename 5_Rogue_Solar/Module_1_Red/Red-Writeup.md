@@ -84,6 +84,8 @@ mosquitto_pub -h 127.0.0.1 -p 1883 -i "rogue_solar_client" -t "grid/solar/site7/
 
 
 The solar generation value on the dashboard is now reflecting the forged value of `150.00 kW`. Since the actual ground truth is ~45.00 kW, this represents a discrepancy of ~105.00 kW, comfortably exceeding the +50 kW challenge target.
+<img width="788" height="445" alt="image" src="https://github.com/user-attachments/assets/0621aef4-d07b-492d-8b7d-2a5a1d27d185" />
+
 
 ---
 
