@@ -1,3 +1,6 @@
+Blue Team Lab Walkthrough
+
+
 Step 1: Initial Triage & Attacker Attribution
 To isolate the origin of the anomalous dashboard spike, incident responders analyzed the Eclipse Mosquitto broker connection logs. By filtering for recent client handshakes during the incident window, responders identified an unauthorized external connection.
 
