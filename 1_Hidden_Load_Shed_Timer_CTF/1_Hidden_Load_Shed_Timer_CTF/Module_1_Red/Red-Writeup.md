@@ -96,7 +96,7 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
 
 
   or use any script to check the feeder change
-'''
+```
 #!/usr/bin/env python3
 from pymodbus.client import ModbusTcpClient
 import time, datetime
@@ -119,7 +119,7 @@ while True:
         time.sleep(0.1)
     except Exception as e:
         pass
-'''
+```
 
 <img width="800" height="137" alt="image" src="https://github.com/user-attachments/assets/b63e9c8e-b6ba-42a0-8555-8cc1ac52b3e9" />
 
