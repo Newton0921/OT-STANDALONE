@@ -213,6 +213,16 @@ s.close()
 
 <img width="1131" height="47" alt="image" src="https://github.com/user-attachments/assets/a4d07765-3c80-4a7f-b468-d96677e264a8" />
 
+C2	Application control
+81	Function code: RESPONSE
+00 00	Internal Indications, no bits set
+0C	Object Group 12: CROB
+01	Variation 1
+28	Qualifier
+01	Object count = 1
+07 00	Object index = 7
+Remaining bytes	CROB response data
+
 
 ### Step 4: Verify Response and Process State Change
 Upon sending the packet, check the raw output in the terminal.
