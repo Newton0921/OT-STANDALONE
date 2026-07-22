@@ -56,6 +56,8 @@ mosquitto_sub -h 127.0.0.1 -p 1883 -t "#" -v
 <img width="902" height="173" alt="image" src="https://github.com/user-attachments/assets/b51d9752-852e-4864-af7e-b2f6974b765d" />
 
 *Analysis: The client identifies the target topic as `grid/solar/site7/kw` and observes a telemetry baseline hovering around ~40 kW.*
+<img width="1012" height="500" alt="image" src="https://github.com/user-attachments/assets/02a0f58c-7550-43e6-81e4-37796424675f" />
+
 
 ### Step 3: Verifying Security Control Weakness (ACL Bypass)
 Test whether the MQTT broker allows anonymous writes to the telemetry topic by attempting to publish a test value. If the broker is misconfigured (e.g., anonymous access is allowed and ACL permissions are loose), the publish command will succeed without credentials or certificates.
