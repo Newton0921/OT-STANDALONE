@@ -79,8 +79,5 @@ Ini, TOML
 pattern readwrite grid/solar/site7/#
 The use of the wildcards (#) paired with the readwrite permission granted any connected client full authority to subscribe to, read, and overwrite any topic under the Site 7 solar hierarchy. There was no segregation between Producers (the solar inverters/sensors) and Consumers (the dashboard/analytics engines).
 
-<img width="537" height="61" alt="image" src="https://github.com/user-attachments/assets/743fc37d-63e2-4294-a9f7-1339705000dc" />
 
-5. Defensive Remediation Plan
-To permanently close this vector and secure the telemetry pipeline, implement the following phased remediation:
 
