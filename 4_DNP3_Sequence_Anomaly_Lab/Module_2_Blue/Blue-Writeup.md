@@ -90,6 +90,8 @@ If parser tools like Wireshark/tshark are unavailable, you can manually isolate 
    0x0040:  fff9 0564 15c4 0a00 4200 161f c0c2 030c  ...d....B.......
    0x0050:  0128 0107 0001 0101 0000 0000 0000 bb93  .(..............
    ```
+   <img width="2560" height="1344" alt="image" src="https://github.com/user-attachments/assets/cdad3ad1-60ff-4a73-93ab-7ba94e53320b" />
+
 3. **Manual Decode of the DNP3 Payload (starting at offset `0x0043`):**
    - `05 64` (Start octets)
    - `15` (Length = 21 bytes)
