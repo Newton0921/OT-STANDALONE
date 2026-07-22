@@ -32,6 +32,8 @@ Plaintext
 
 
 First Forged Payload: 150.00
+<img width="772" height="645" alt="image" src="https://github.com/user-attachments/assets/00f88fb9-286b-44ea-b80a-6da9871637f7" />
+
 
 Assessment: The attacker successfully published an unencrypted, unvalidated floating-point payload directly to the active production telemetry topic, which the broker immediately fanned out to the EMS dashboard monitor.
 
