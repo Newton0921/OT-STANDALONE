@@ -17,6 +17,9 @@ Source IP Address: 10.0.5.112
 
 Assessment: The attacker utilized a custom script or MQTT GUI client (e.g., MQTT Explorer) without attempting to obfuscate their Client ID or IP, indicating either an automated attack script or an internal network compromise.
 
+<img width="770" height="646" alt="image" src="https://github.com/user-attachments/assets/94e87712-49e8-4786-82ab-a1b96a80d662" />
+
+
 Step 2: Payload Identification & Scope Assessment
 Once the attacker's Client ID was established, responders isolated all publishing activity associated with rogue_solar_client to determine the scope of data corruption.
 
