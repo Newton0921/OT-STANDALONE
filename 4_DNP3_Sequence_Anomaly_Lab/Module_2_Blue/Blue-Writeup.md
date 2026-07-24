@@ -21,8 +21,8 @@ Inspect the approved master whitelist configured on the outstation system:
 cat /opt/dnp3_lab/whitelist.txt
 ```
 
-APPROVED_MASTERS:
-10.0.0.50 - DNP3_Master_Addr: 1
+OUTPUT : APPROVED_MASTERS:
+DNP3_Master_Addr: 1
 ```
 *Forensic Finding:* The only authorized SCADA Master is address **`1`**. Any traffic from other addresses commanding the outstation is rogue or unauthorized.
 
