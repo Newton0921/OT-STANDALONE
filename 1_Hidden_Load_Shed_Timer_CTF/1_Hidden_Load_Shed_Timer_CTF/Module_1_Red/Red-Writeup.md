@@ -56,6 +56,9 @@ A simple way to understand it is:
 | `RESOURCE Res0 ON PLC` | Which PLC processor/runtime runs it? |
 | `TASK TaskMain` | When and how frequently should it run? |
 | `PROGRAM Inst0 ... : baseline` | Which running copy of the program is attached to the task? |
+
+<img width="571" height="585" alt="image" src="https://github.com/user-attachments/assets/c8da1bf7-c6d5-4d30-812c-f1b382f65251" />
+
    
 3. In the OpenPLC Web UI, navigate to the **Programs** tab in the sidebar.
 4. Select **Upload Program**, choose your `baseline.st` file, and upload it.
