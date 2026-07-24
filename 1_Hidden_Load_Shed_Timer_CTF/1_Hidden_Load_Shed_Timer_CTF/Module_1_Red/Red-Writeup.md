@@ -22,6 +22,8 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
 
 ### Step 2: Logic Development & Baseline Deployment
 1. Create your own baseline program named `baseline.st` (you can base it on the template in `engineering_baseline/baseline.st`) to configure the three critical feeders. Define the variables and force `FEEDER_1_CMD` (`%QX0.0`), `FEEDER_2_CMD` (`%QX0.1`), and `FEEDER_3_CMD` (`%QX0.2`) to `TRUE`:
+![Uploading image.png…]()
+
    ```pascal
    PROGRAM baseline
      VAR
@@ -42,11 +44,11 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
    END_CONFIGURATION
    ```
    
-2. In the OpenPLC Web UI, navigate to the **Programs** tab in the sidebar.
-3. Select **Upload Program**, choose your `baseline.st` file, and upload it.
-4. Once uploaded, click **Launch** or **Go to Dashboard** to trigger compilation and start the runtime in a clean state.
-5. Create a new Structured Text file named `malicious.st` by modifying the baseline logic to implement the hidden timer. Keep the strict compilation rule of standard **IEC 61131-3** syntax in mind: located variables (the physical outputs declared with `AT`) **must not** share the same `VAR` block with unlocated variables (the internal timer and reset variables).
-6. Save the following Structured Text payload as `malicious.st`:
+3. In the OpenPLC Web UI, navigate to the **Programs** tab in the sidebar.
+4. Select **Upload Program**, choose your `baseline.st` file, and upload it.
+5. Once uploaded, click **Launch** or **Go to Dashboard** to trigger compilation and start the runtime in a clean state.
+6. Create a new Structured Text file named `malicious.st` by modifying the baseline logic to implement the hidden timer. Keep the strict compilation rule of standard **IEC 61131-3** syntax in mind: located variables (the physical outputs declared with `AT`) **must not** share the same `VAR` block with unlocated variables (the internal timer and reset variables).
+7. Save the following Structured Text payload as `malicious.st`:
    ```pascal
    PROGRAM malicious
      VAR
