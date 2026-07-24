@@ -97,6 +97,43 @@ A simple way to understand it is:
      END_RESOURCE
    END_CONFIGURATION
    ```
+The `PROGRAM malicious` section defines modified PLC logic that keeps Feeders 1 and 2 ON while using a 60-second timer to briefly interrupt Feeder 3.
+
+A simple way to understand it is:
+
+| Part | What it does |
+|---|---|
+| `PROGRAM malicious` | Defines the modified feeder-control program. |
+| `FEEDER_1_CMD AT %QX0.0 : BOOL := TRUE;` | Maps the Feeder 1 command to PLC output bit `%QX0.0` and initially sets it to ON. |
+| `FEEDER_2_CMD AT %QX0.1 : BOOL := TRUE;` | Maps the Feeder 2 command to PLC output bit `%QX0.1` and initially sets it to ON. |
+| `FEEDER_3_CMD AT %QX0.2 : BOOL := TRUE;` | Maps the Feeder 3 command to PLC output bit `%QX0.2` and initially sets it to ON. |
+| `Malicious_Timer : TON;` | Creates an on-delay timer used to count for 60 seconds. |
+| `Timer_Reset : BOOL := FALSE;` | Creates a Boolean variable used to stop and reset the timer. |
+| `FEEDER_1_CMD := TRUE;` | Continuously commands Feeder 1 ON. |
+| `FEEDER_2_CMD := TRUE;` | Continuously commands Feeder 2 ON. |
+| `Malicious_Timer(IN := NOT Timer_Reset, PT := T#60s);` | Runs the timer while `Timer_Reset` is `FALSE`, with a preset duration of 60 seconds. |
+| `IF Malicious_Timer.Q THEN` | Checks whether the timer has completed its 60-second count. |
+| `FEEDER_3_CMD := FALSE;` | Commands Feeder 3 OFF when the timer completes. |
+| `Timer_Reset := TRUE;` | Requests a timer reset after the timer completes. |
+| `ELSE` | Runs the following instructions while the timer has not completed. |
+| `FEEDER_3_CMD := TRUE;` | Keeps or returns Feeder 3 to ON while the timer is counting or resetting. |
+| `Timer_Reset := FALSE;` | Allows the timer to start or continue counting. |
+| `CONFIGURATION Config0` | Defines the complete PLC application configuration. |
+| `RESOURCE Res0 ON PLC` | Specifies the PLC processing resource that executes the program. |
+| `TASK TaskMain(INTERVAL := T#20ms, PRIORITY := 0);` | Creates a cyclic task that runs approximately once every 20 milliseconds. |
+| `PROGRAM Inst0 WITH TaskMain : malicious;` | Creates a running instance named `Inst0` of the `malicious` program and attaches it to `TaskMain`. |
+
+## Expected Execution Sequence
+
+| Stage | Timer state | Feeder 1 | Feeder 2 | Feeder 3 |
+|---|---|---:|---:|---:|
+| Program starts | Timer begins counting | ON | ON | ON |
+| Before 60 seconds | Timer is counting | ON | ON | ON |
+| Timer reaches 60 seconds | `Malicious_Timer.Q` becomes `TRUE` | ON | ON | OFF |
+| Next PLC scan | Timer is reset | ON | ON | ON |
+| Following scans | Timer begins another 60-second count | ON | ON | ON |
+
+> **Important:** Because `TaskMain` executes every 20 milliseconds, Feeder 3 is likely commanded OFF for only one PLC scan—approximately 20 milliseconds. It is then commanded ON again, and the timer restarts. Therefore, the code creates a brief recurring interruption rather than keeping Feeder 3 permanently OFF.
 
 ### Step 3: Modifying the Program (Deploying the Payload)
 1. In the OpenPLC Web UI, navigate to the **Programs** tab in the sidebar.
