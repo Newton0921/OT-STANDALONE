@@ -17,7 +17,8 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
    * **Username**: `openplc`
    * **Password**: `openplc`
 
-<img width="538" height="617" alt="image" src="https://github.com/user-attachments/assets/05cfd0b3-203b-43f6-aaeb-4f7a88035b8c" />
+<img width="881" height="926" alt="image" src="https://github.com/user-attachments/assets/9ff3ef05-cc97-4022-ae5e-6e150a8c4eb5" />
+
 
 ### Step 2: Logic Development & Baseline Deployment
 1. Create your own baseline program named `baseline.st` (you can base it on the template in `engineering_baseline/baseline.st`) to configure the three critical feeders. Define the variables and force `FEEDER_1_CMD` (`%QX0.0`), `FEEDER_2_CMD` (`%QX0.1`), and `FEEDER_3_CMD` (`%QX0.2`) to `TRUE`:
