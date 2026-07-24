@@ -90,7 +90,8 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
 3. Choose your newly created `malicious.st` file.
 4. Name the program `Update_Routine` to blend in, and click **Upload**.
 5. Once uploaded, click **Launch** or **Go to Dashboard** to trigger the Structured Text compiler. OpenPLC will compile the code to C++, link the binary, and restart the runtime background server automatically. Verify the compilation console output prints `Compilation successful!`.
-<img width="946" height="707" alt="image" src="https://github.com/user-attachments/assets/2b997ef6-e334-4c04-968a-6f4a44c2236c" />
+
+<img width="1843" height="968" alt="image" src="https://github.com/user-attachments/assets/ab8cb369-a6e2-482b-82eb-692d5c8b577c" />
 
 
 ### Step 4: Verification
