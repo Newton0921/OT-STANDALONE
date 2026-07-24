@@ -45,6 +45,16 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
      END_RESOURCE
    END_CONFIGURATION
    ```
+The PROGRAM baseline section defines what the PLC should do, while the configuration section defines where, when, and as which running copy it should execute.
+
+A simple way to understand it is:
+
+Part	                                Question it answers
+PROGRAM baseline	                    What logic should run?
+CONFIGURATION Config0	                Which PLC deployment does this belong to?
+RESOURCE Res0 ON PLC	                Which PLC processor/runtime runs it?
+TASK TaskMain	                        When and how frequently should it run?
+PROGRAM Inst0 ... : baseline	        Which running copy of the program is attached to the task?
    
 3. In the OpenPLC Web UI, navigate to the **Programs** tab in the sidebar.
 4. Select **Upload Program**, choose your `baseline.st` file, and upload it.
