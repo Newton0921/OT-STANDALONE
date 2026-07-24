@@ -22,7 +22,9 @@ Your goal is to modify the running PLC logic (T0889) to periodically trip `FEEDE
 
 ### Step 2: Logic Development & Baseline Deployment
 1. Create your own baseline program named `baseline.st` (you can base it on the template in `engineering_baseline/baseline.st`) to configure the three critical feeders. Define the variables and force `FEEDER_1_CMD` (`%QX0.0`), `FEEDER_2_CMD` (`%QX0.1`), and `FEEDER_3_CMD` (`%QX0.2`) to `TRUE`:
-![Uploading image.png…]()
+   
+<img width="1850" height="927" alt="image" src="https://github.com/user-attachments/assets/e0da3671-2002-4c5c-90ee-8ec8454cd581" />
+
 
    ```pascal
    PROGRAM baseline
